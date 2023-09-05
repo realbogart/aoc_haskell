@@ -1,0 +1,1 @@
+ghcid "--command=ghci 2020/d1.hs" --test "withFileContents \"2020/d1_example.txt\" d1"
