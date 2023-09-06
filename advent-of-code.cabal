@@ -1,0 +1,23 @@
+cabal-version:      2.4
+name:               advent-of-code
+version:            0.1.0.0
+synopsis:
+homepage:
+license:            NONE
+author:             Johan Yngman
+maintainer:         johan.yngman@gmail.com
+extra-source-files: CHANGELOG.md
+
+library
+    exposed-modules:  AoC
+    build-depends:    base ^>=4.16.4.0
+    hs-source-dirs:   src
+    default-language: Haskell2010
+
+test-suite advent-of-code-test
+    default-language: Haskell2010
+    type:             exitcode-stdio-1.0
+    hs-source-dirs:   test
+    main-is:          MyLibTest.hs
+    build-depends:    base ^>=4.16.4.0
+
