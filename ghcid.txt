@@ -1,1 +1,5 @@
 ghcid "--command=ghci 2020/d1.hs" --test "withFileContents \"2020/d1_example.txt\" d1"
+
+
+ghcid --command="cabal repl" --test "Y2020.D1.d1Test"
+ghcid --command="cabal repl" --test "withFileContents \"src/Y2020/d1_example.txt\" Y2020.D1.d1"

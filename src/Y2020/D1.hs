@@ -1,4 +1,4 @@
-module Y2020.D1(d1) where
+module Y2020.D1(d1, d1Test) where
 
 import Distribution.Simple.Utils
 import Data.List
@@ -18,3 +18,5 @@ d1_2 :: String -> IO ()
 d1_2 = do 
   print . map product . filter ((==2020) . sum) . combinationsOfThree . map read . words
 
+d1Test :: IO ()
+d1Test = withFileContents "src/Y2020/d1_example.txt" d1
