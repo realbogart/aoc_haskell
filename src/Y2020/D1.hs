@@ -1,3 +1,5 @@
+module Y2020.D1(d1) where
+
 import Distribution.Simple.Utils
 import Data.List
 -- module Main

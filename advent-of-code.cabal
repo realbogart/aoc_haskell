@@ -9,7 +9,8 @@ maintainer:         johan.yngman@gmail.com
 extra-source-files: CHANGELOG.md
 
 library
-    exposed-modules:  AoC
+    exposed-modules:  AoC,
+                      Y2020.D1
     -- other-modules:    Y2020
     build-depends:    base ^>=4.16.4.0,
                       parsec ==3.1.16.1
