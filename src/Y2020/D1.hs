@@ -1,10 +1,6 @@
 module Y2020.D1 where
 
 import AoC
-import Data.List
-import Text.Megaparsec (many)
-import Text.Megaparsec.Char (eol)
-import Text.Megaparsec.Char.Lexer (decimal)
 
 parseInput :: Parser [Int]
 parseInput = many $ decimal <* eol

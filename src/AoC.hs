@@ -1,6 +1,16 @@
-module AoC where
+module AoC (
+  Parser,
+  module Text.Megaparsec, 
+  module Text.Megaparsec.Char,
+  module Text.Megaparsec.Char.Lexer,
+  module Data.List
+) where
 
-import Text.Megaparsec
+import Text.Megaparsec(Parsec, parse, manyTill, anySingle, errorBundlePretty, many, eof)
+import Text.Megaparsec.Char(eol)
+import Text.Megaparsec.Char.Lexer(decimal)
+
+import Data.List
 import Data.Text (Text, pack)
 import Data.Void
 
@@ -12,5 +22,5 @@ parseAndApply p f inputfile = do
   let parseResult = parse p "" (pack content)
   case parseResult of
     Left err -> putStrLn $ "Failed with error: " ++ errorBundlePretty err
-    Right input -> print $ (f input)
+    Right input -> print $ f input
 
