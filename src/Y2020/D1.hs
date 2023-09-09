@@ -1,22 +1,21 @@
-module Y2020.D1(d1, d1Test) where
+module Y2020.D1 where
 
-import Distribution.Simple.Utils
+import AoC
+
 import Data.List
--- module Main
 
-combinationsOfTwo :: [a] -> [[a]]
-combinationsOfTwo xs = [ [x,y] | (x:ys) <- tails xs, y <- ys ]
+import Text.Megaparsec (many)
+import Text.Megaparsec.Char (eol)
+import Text.Megaparsec.Char.Lexer (decimal)
 
-combinationsOfThree :: [a] -> [[a]]
-combinationsOfThree xs = [ [x,y,z] | (x:ys) <- tails xs, (y:zs) <- tails ys, z <- zs ]
+integerListParser :: Parser [Int]
+integerListParser = many $ decimal <* eol
 
-d1 :: String -> IO ()
-d1 = do 
-  print . map product . filter ((==2020) . sum) . combinationsOfTwo . map read . words
+d1 :: [Int] -> [Int]
+d1 = map product . filter ((==2020) . sum) . combinationsOfTwo
+  where combinationsOfTwo xs = [ [x,y] | (x:ys) <- tails xs, y <- ys ]
 
-d1_2 :: String -> IO ()
-d1_2 = do 
-  print . map product . filter ((==2020) . sum) . combinationsOfThree . map read . words
+d1_2 :: [Int] -> [Int]
+d1_2 = map product . filter ((==2020) . sum) . combinationsOfThree
+  where combinationsOfThree xs = [ [x,y,z] | (x:ys) <- tails xs, (y:zs) <- tails ys, z <- zs ]
 
-d1Test :: IO ()
-d1Test = withFileContents "src/Y2020/d1_example.txt" d1
