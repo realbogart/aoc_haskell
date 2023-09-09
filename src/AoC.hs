@@ -6,8 +6,8 @@ module AoC (
   module Data.List
 ) where
 
-import Text.Megaparsec(Parsec, parse, manyTill, anySingle, errorBundlePretty, many, eof)
-import Text.Megaparsec.Char(eol)
+import Text.Megaparsec(Parsec, parse, manyTill, anySingle, errorBundlePretty, many, eof, choice)
+import Text.Megaparsec.Char(eol, letterChar, string, char)
 import Text.Megaparsec.Char.Lexer(decimal)
 
 import Data.List
