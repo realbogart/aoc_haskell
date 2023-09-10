@@ -6,7 +6,8 @@ module AoC (
   module Data.List,
   module Control.Monad,
   module Control.Applicative,
-  module Data.Function
+  module Data.Function,
+  module Text.Pretty.Simple
 ) where
 
 import Text.Megaparsec(Parsec, parse, manyTill, anySingle, errorBundlePretty, many, eof, choice)
@@ -21,6 +22,8 @@ import Data.Function (on)
 import Control.Monad (void)
 import Control.Applicative ((<|>))
 
+import Text.Pretty.Simple (pPrint)
+import qualified Distribution.PackageDescription as Text.Pretty
 
 type Parser = Parsec Void Text
 
@@ -30,5 +33,5 @@ parseAndApply p f inputfile = do
   let parseResult = parse p "" (pack content)
   case parseResult of
     Left err -> putStrLn $ "Failed with error: " ++ errorBundlePretty err
-    Right input -> print $ f input
+    Right input -> pPrint $ f input
 
