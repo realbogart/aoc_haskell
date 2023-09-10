@@ -13,12 +13,15 @@ data Vec2 = Vec2
   , y :: Int
   } deriving (Show)
 
+type Dir = Vec2
+type Pos = Vec2
+
 data Line = Line
   { a :: Vec2
   , b :: Vec2
   } deriving (Show)
 
-turnDir :: Turn -> Vec2 -> Vec2
+turnDir :: Turn -> Dir -> Dir
 turnDir TurnLeft (Vec2 x y) = Vec2 (-y) x
 turnDir TurnRight (Vec2 x y) = Vec2 y (-x)
 
@@ -33,19 +36,41 @@ parseInput :: Parser [Move]
 parseInput = do
   many parseMove
 
+manhattanToOrigo (Vec2 x y) = abs x + abs y 
+
 partOne :: [Move] -> Int
 partOne = manhattanToOrigo . fst . foldl' turnAndWalk (Vec2 0 0, Vec2 0 1)
-  where turnAndWalk :: (Vec2, Vec2) -> Move -> (Vec2, Vec2) 
+  where turnAndWalk :: (Pos, Dir) -> Move -> (Pos, Dir) 
         turnAndWalk (Vec2 px py, d) m = (Vec2 (px + ndx * s) (py + ndy * s), Vec2 ndx ndy)
                                           where (Vec2 ndx ndy) = turnDir (turn m) d
                                                 s = steps m
-        manhattanToOrigo (Vec2 x y) = abs x + abs y 
 
-getWalkLine :: (Vec2,Vec2) -> Move -> (Vec2,Line)
+getWalkLine :: (Dir,Pos) -> Move -> (Dir,Line)
 getWalkLine (d,Vec2 px py) m = (Vec2 ndx ndy, Line (Vec2 (px + ndx) (py + ndy)) (Vec2 (px + ndx * s) (py + ndy * s)))
   where (Vec2 ndx ndy) = turnDir (turn m) d 
         s = steps m
 
-partTwo :: [Move] -> [(Vec2,Line)]
-partTwo = tail . scanl' (getWalkLine . f) (Vec2 0 1, Line (Vec2 0 0) (Vec2 0 0))
+isEqualOrBetween :: Int -> Int -> Int -> Bool
+isEqualOrBetween n t1 t2 = n >= min t1 t2 && n <= max t1 t2
+
+getIntersection :: Line -> Line -> Maybe Pos
+getIntersection (Line (Vec2 ax1 ay1) (Vec2 ax2 ay2)) (Line (Vec2 bx1 by1) (Vec2 bx2 by2))
+  | isEqualOrBetween bx1 ax1 ax2 && isEqualOrBetween ay1 by1 by2 = Just (Vec2 bx1 ay1) 
+  | isEqualOrBetween ax1 bx1 bx2 && isEqualOrBetween by1 ay1 ay2 = Just (Vec2 ax1 by1)
+  | otherwise = Nothing
+
+getAllIntersectionsForLine :: Line -> [Line] -> [Maybe Pos]
+getAllIntersectionsForLine l = filter isJust . map (getIntersection l)
+
+getAllIntersections :: [Line] -> [[Maybe Pos]]
+getAllIntersections lines = filter (not . null) $ zipWith getAllIntersectionsForLine lines (inits lines)
+
+getFirstIntersection :: [Line] -> Maybe Pos
+getFirstIntersection = getFirstValid . getAllIntersections
+  where getFirstValid :: [[Maybe Pos]] -> Maybe Pos 
+        getFirstValid [] = Nothing
+        getFirstValid (i:is) = head i
+
+partTwo :: [Move] -> Maybe Int
+partTwo moves = manhattanToOrigo <$> (getFirstIntersection . map snd . scanl' (getWalkLine . f) (Vec2 0 1, Line (Vec2 0 0) (Vec2 0 0)) $ moves)
   where f (d, Line _ p2) = (d, p2)

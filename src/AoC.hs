@@ -7,7 +7,8 @@ module AoC (
   module Control.Monad,
   module Control.Applicative,
   module Data.Function,
-  module Text.Pretty.Simple
+  module Text.Pretty.Simple,
+  module Data.Maybe
 ) where
 
 import Text.Megaparsec(Parsec, parse, manyTill, anySingle, errorBundlePretty, many, eof, choice)
@@ -18,6 +19,7 @@ import Data.List
 import Data.Text (Text, pack)
 import Data.Void
 import Data.Function (on)
+import Data.Maybe (isJust)
 
 import Control.Monad (void)
 import Control.Applicative ((<|>))
