@@ -3,16 +3,17 @@ module AoC (
   module Text.Megaparsec, 
   module Text.Megaparsec.Char,
   module Text.Megaparsec.Char.Lexer,
-  module Data.List,
+  module Text.Pretty.Simple,
   module Control.Monad,
   module Control.Applicative,
+  module Data.List,
   module Data.Function,
-  module Text.Pretty.Simple,
-  module Data.Maybe
+  module Data.Maybe,
+  module Data.Char
 ) where
 
 import Text.Megaparsec(Parsec, parse, manyTill, anySingle, errorBundlePretty, many, eof, choice)
-import Text.Megaparsec.Char(eol, letterChar, string, char)
+import Text.Megaparsec.Char(eol, letterChar, digitChar, string, char)
 import Text.Megaparsec.Char.Lexer(decimal)
 
 import Data.List
@@ -20,6 +21,7 @@ import Data.Text (Text, pack)
 import Data.Void
 import Data.Function (on)
 import Data.Maybe (isJust)
+import Data.Char (digitToInt)
 
 import Control.Monad (void)
 import Control.Applicative ((<|>))
