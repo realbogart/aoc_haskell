@@ -1,6 +1,7 @@
 module Y2016.D1 where
 
 import AoC
+import Y2015.D1 (partOneTests)
 
 data Turn = TurnLeft | TurnRight deriving (Show)
 data Move = Move 
@@ -35,6 +36,12 @@ parseMove = do
 parseInput :: Parser [Move]
 parseInput = do
   many parseMove
+
+partOneTests :: [(Text,Int)]
+partOneTests = [("R2, L3",5), ("R2, R2, R2",2), ("R5, L5, R5, R3", 12)]
+
+partTwoTests :: [(Text,Maybe Int)]
+partTwoTests = [("R8, R4, R4, R8",Just 4)]
 
 manhattanToOrigo (Vec2 x y) = abs x + abs y 
 
