@@ -10,7 +10,7 @@ module AoC (
   module Data.Function,
   module Data.Maybe,
   module Data.Char,
-  T.Text
+  T.Text,
 ) where
 
 import Text.Megaparsec(Parsec, parse, manyTill, anySingle, errorBundlePretty, many, eof, choice)
@@ -30,7 +30,6 @@ import Control.Applicative ((<|>))
 
 import Text.Pretty.Simple (pPrint)
 import qualified Distribution.PackageDescription as Text.Pretty
-import Data.Foldable (traverse_)
 
 type Parser = Parsec Void T.Text
 
@@ -71,4 +70,3 @@ parseTestAndSolve parseFn solveFn tests inputFile = do
         TIO.putStrLn $ "[Failed]\t'" <> input <> "'\n\t\t= " <> (T.pack . show) output 
                     <> " (Expected " <> (T.pack . show) expectedOutput <> ")"
         return False
-
