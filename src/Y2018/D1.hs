@@ -25,7 +25,6 @@ partOne = sum
 
 partTwo :: [Int] -> Int
 partTwo input = firstDuplicate Set.empty 0 (cycle input)
-  where firstDuplicate :: Set.Set Int -> Int -> [Int] -> Int
-        firstDuplicate previous acc (x:xs)  | Set.member acc previous = acc
+  where firstDuplicate previous acc (x:xs)  | Set.member acc previous = acc
                                             | otherwise = firstDuplicate (Set.insert acc previous) (x+acc) xs
 
