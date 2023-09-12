@@ -13,7 +13,7 @@ module AoC (
   T.Text,
 ) where
 
-import Text.Megaparsec(Parsec, parse, manyTill, anySingle, errorBundlePretty, many, eof, choice)
+import Text.Megaparsec(Parsec, parse, manyTill, anySingle, errorBundlePretty, many, eof, choice, optional, some)
 import Text.Megaparsec.Char(eol, letterChar, digitChar, string, char)
 import Text.Megaparsec.Char.Lexer(decimal)
 
