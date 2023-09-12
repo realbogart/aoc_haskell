@@ -11,6 +11,7 @@ extra-source-files: CHANGELOG.md
 library
     exposed-modules:  AoC,
                       Y2015.D1
+                      Y2015.D2
                       Y2016.D1
                       Y2017.D1
                       Y2018.D1
