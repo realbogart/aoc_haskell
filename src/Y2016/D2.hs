@@ -2,6 +2,8 @@ module Y2016.D2 where
 
 import AoC
 
+default (Text, Int)
+
 data Direction = NumLeft | NumRight | NumUp | NumDown
 
 parseInput = parseLineSeparated segment
@@ -12,40 +14,23 @@ parseInput = parseLineSeparated segment
 
 partOneTests = [("ULL\nRRDDD\nLURDL\nUUUUD",[1,9,8,5])]
 
-getNext :: Int -> Direction -> Int
-getNext 1 NumRight = 2
-getNext 1 NumDown = 4
-getNext 2 NumLeft = 1
-getNext 2 NumRight = 3
-getNext 2 NumDown = 5
-getNext 3 NumLeft = 2
-getNext 3 NumDown = 6
-getNext 4 NumUp = 1
-getNext 4 NumRight = 5
-getNext 4 NumDown = 7
-getNext 5 NumLeft = 4
-getNext 5 NumUp = 2
-getNext 5 NumRight = 6
-getNext 5 NumDown = 8
-getNext 6 NumLeft = 5
-getNext 6 NumUp = 3
-getNext 6 NumDown = 9
-getNext 7 NumUp = 4
-getNext 7 NumRight = 8
-getNext 8 NumLeft = 7
-getNext 8 NumUp = 5
-getNext 8 NumRight = 9
-getNext 9 NumLeft = 8
-getNext 9 NumUp = 6
-getNext x _ = x
+selectDir :: (a, a, a, a) -> Direction -> a
+selectDir (l, _, _, _) NumLeft = l
+selectDir (_, r, _, _) NumRight = r
+selectDir (_, _, u, _) NumUp = u
+selectDir (_, _, _, d) NumDown = d
 
--- getCode :: (a -> Direction -> a) -> a -> [[Direction]] -> [a]
--- getCode f n ds = scanl getNumber n ds 
---   where getNumber nn dd = foldl' getNext nn dd
---
--- partOne :: [[Direction]] -> [Int]
--- partOne = getCode getNext 5 
+getNext 1 d = selectDir (1, 2, 1, 4) d
+getNext 2 d = selectDir (1, 3, 2, 5) d
+getNext 3 d = selectDir (2, 3, 3, 6) d
+getNext 4 d = selectDir (4, 5, 1, 7) d
+getNext 5 d = selectDir (4, 6, 2, 8) d
+getNext 6 d = selectDir (5, 6, 3, 9) d
+getNext 7 d = selectDir (7, 8, 4, 7) d
+getNext 8 d = selectDir (7, 9, 5, 8) d
+getNext 9 d = selectDir (8, 9, 6, 9) d
 
 partOne = tail . scanl getNumber 5 
   where getNumber :: Int -> [Direction] -> Int
         getNumber n = foldl' getNext n 
+
