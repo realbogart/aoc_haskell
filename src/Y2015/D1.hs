@@ -3,14 +3,13 @@ module Y2015.D1 where
 import AoC
 import qualified Data.Text as T
 
+default (Text, Int)
+
 parseInput :: Parser T.Text
 parseInput = T.pack <$> manyTill anySingle eof
 
-partOneTests :: [(T.Text, Int)]
 partOneTests = [("(())",0), ("()()",0), ("(((",3), ("(()(()(",3),
                 ("))(((((",3), ("())",(-1)), ("())",(-1)), (")))",(-3)), (")())())",(-3))]
-
-partTwoTests :: [(T.Text, Int)]
 partTwoTests = [(")",1), ("()())",5)]
 
 partOne :: T.Text -> Int

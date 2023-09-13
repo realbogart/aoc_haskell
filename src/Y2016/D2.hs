@@ -4,15 +4,12 @@ import AoC
 
 data Direction = NumLeft | NumRight | NumUp | NumDown
 
-parseInput :: Parser [[Direction]]
-parseInput = many (segment <* optional eol)
-  where segment :: Parser [Direction]
-        segment = some (NumLeft <$ char 'L' <|>
+parseInput = parseLineSeparated segment
+  where segment = some (NumLeft <$ char 'L' <|>
                         NumRight <$ char 'R' <|>
                         NumUp <$ char 'U' <|>
                         NumDown <$ char 'D')
 
-partOneTests :: [(Text,[Int])]
 partOneTests = [("ULL\nRRDDD\nLURDL\nUUUUD",[1,9,8,5])]
 
 getNext :: Int -> Direction -> Int
@@ -49,7 +46,6 @@ getNext x _ = x
 -- partOne :: [[Direction]] -> [Int]
 -- partOne = getCode getNext 5 
 
-partOne :: [[Direction]] -> [Int]
 partOne = tail . scanl getNumber 5 
   where getNumber :: Int -> [Direction] -> Int
         getNumber n = foldl' getNext n 

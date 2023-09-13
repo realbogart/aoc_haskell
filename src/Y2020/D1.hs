@@ -1,18 +1,14 @@
 module Y2020.D1 where
 
 import AoC
-import Y2015.D1 (partOneTests)
 
-parseInput :: Parser [Int]
-parseInput = many $ decimal <* eol
+default (Text, Int)
 
-input :: Text
+parseInput = parseLineSeparated decimal
+
 input = "1721\n979\n366\n299\n675\n1456\n"
 
-partOneTests :: [(Text,[Int])]
 partOneTests = [(input, [514579])]
-
-partTwoTests :: [(Text,[Int])]
 partTwoTests = [(input, [241861950])]
 
 partOne :: [Int] -> [Int]
