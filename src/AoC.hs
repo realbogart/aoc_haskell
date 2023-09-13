@@ -12,7 +12,7 @@ module AoC (
   module Data.Char,
   T.Text,
   parseLineSeparated,
-  makeTests
+  parseGroupsLineSeparated
 ) where
 
 import Text.Megaparsec(Parsec, parse, manyTill, anySingle, errorBundlePretty, many, eof, choice, optional, some)
@@ -33,13 +33,13 @@ import Control.Applicative ((<|>))
 import Text.Pretty.Simple (pPrint)
 import qualified Distribution.PackageDescription as Text.Pretty
 
-makeTests :: [(T.Text, a)] -> [(T.Text, a)]
-makeTests = id
-
 type Parser = Parsec Void T.Text
 
 parseLineSeparated :: Parser a -> Parser [a]
-parseLineSeparated p = some (p <* (eol <|> "")) 
+parseLineSeparated p = some (p <* optional eol) 
+
+parseGroupsLineSeparated :: Parser a -> Parser [[a]]
+parseGroupsLineSeparated p = some ((parseLineSeparated p) <* optional eol) 
 
 parseAndApply :: Show b => Parser a -> (a -> b) -> FilePath -> IO ()
 parseAndApply p f inputfile = do
