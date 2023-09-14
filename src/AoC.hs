@@ -16,7 +16,7 @@ module AoC (
 ) where
 
 import Text.Megaparsec(Parsec, parse, manyTill, anySingle, errorBundlePretty, many, eof, choice, optional, some)
-import Text.Megaparsec.Char(eol, letterChar, digitChar, string, char)
+import Text.Megaparsec.Char(eol, letterChar, digitChar, string, char, tab, space, spaceChar, hspace1)
 import Text.Megaparsec.Char.Lexer(decimal)
 
 import Data.List
@@ -50,14 +50,14 @@ parseAndApply p f inputfile = do
     Right input -> do putStrLn "Answer: " 
                       pPrint $ f input
 
-parseTestAndSolve :: (Show b, Eq b) => Parser a -> (a -> b) -> [(T.Text,b)] -> FilePath -> IO ()   
+parseTestAndSolve :: (Show a, Show b, Eq b) => Parser a -> (a -> b) -> [(T.Text,b)] -> FilePath -> IO ()   
 parseTestAndSolve parseFn solveFn tests inputFile = do
   let parsedTests = traverse parseTest tests
   case parsedTests of
     Left err -> putStrLn $ "Failed to parse tests: " ++ errorBundlePretty err
     Right inputs -> do 
       putStrLn "Running tests...\n"
-      testResults <- traverse verifyTestResult (zip tests (map solveFn inputs))
+      testResults <- traverse verifyTestResult (zip3 tests inputs (map solveFn inputs))
       if and testResults
       then do 
         putStrLn "\nAll tests passed!"
@@ -68,13 +68,12 @@ parseTestAndSolve parseFn solveFn tests inputFile = do
   where 
     parseTest (input, _) = parse parseFn "" input
 
-    -- verifyTestResult :: (Show a, Eq a) => ((T.Text,a),a) -> IO Bool
-    verifyTestResult ((input,expectedOutput), output) =
+    verifyTestResult ((textInput,expectedOutput), input, output) =
       if output == expectedOutput
       then do
-        TIO.putStrLn $ "[Ok]\t\t'" <> input <> "'\n\t\t= " <> (T.pack . show) output
+        TIO.putStrLn $ "[Ok]\t\t" <> (T.pack . show) input <> "\n\t\t= " <> (T.pack . show) output
         return True
       else do
-        TIO.putStrLn $ "[Failed]\t'" <> input <> "'\n\t\t= " <> (T.pack . show) output 
+        TIO.putStrLn $ "[Failed]\t" <> (T.pack . show) input <> "\n\t\t= " <> (T.pack . show) output 
                     <> " (Expected " <> (T.pack . show) expectedOutput <> ")"
         return False
