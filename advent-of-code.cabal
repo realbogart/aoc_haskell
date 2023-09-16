@@ -40,7 +40,7 @@ library
                       -Wno-missing-deriving-strategies
 
 test-suite advent-of-code-test
-    default-language: Haskell2010
+    default-language: GHC2021
     type:             exitcode-stdio-1.0
     hs-source-dirs:   test
     main-is:          MyLibTest.hs
