@@ -12,7 +12,10 @@ module AoC (
   module Data.Char,
   T.Text,
   parseLineSeparated,
-  parseGroupsLineSeparated
+  parseGroupsLineSeparated,
+  comb2,
+  perm2,
+  T.pack
 ) where
 
 import Text.Megaparsec(Parsec, parse, manyTill, anySingle, errorBundlePretty, many, eof, choice, optional, some)
@@ -32,6 +35,9 @@ import Control.Applicative ((<|>))
 
 import Text.Pretty.Simple (pPrint)
 import qualified Distribution.PackageDescription as Text.Pretty
+
+comb2 xs = [(x,y) | (x:ys) <- tails xs, y <- ys]
+perm2 xs = [(x,y) | x <- xs, y <- xs, x /= y]
 
 type Parser = Parsec Void T.Text
 

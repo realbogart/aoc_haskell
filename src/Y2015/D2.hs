@@ -8,7 +8,7 @@ data Present = Present
   { l :: Int
   , w :: Int
   , h :: Int
-  }
+  } deriving (Show)
 
 parseInput = parseLineSeparated present
   where present = do

@@ -5,6 +5,7 @@ import AoC
 default (Text, Int)
 
 data Direction = NumLeft | NumRight | NumUp | NumDown
+  deriving (Show)
 
 parseInput = parseLineSeparated segment
   where segment = some (NumLeft <$ char 'L' <|>
