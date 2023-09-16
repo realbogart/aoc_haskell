@@ -37,7 +37,7 @@ library
                       -Wno-monomorphism-restriction -Wno-type-defaults -Wno-missing-safe-haskell-mode
                       -Wno-unsafe -Wno-missing-local-signatures -Wno-missing-kind-signatures
                       -Wno-all-missed-specialisations -Wno-missed-specialisations
-                      -Wno-missing-deriving-strategies
+                      -Wno-missing-deriving-strategies -Wno-prepositive-qualified-module
 
 test-suite advent-of-code-test
     default-language: GHC2021

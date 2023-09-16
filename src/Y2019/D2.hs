@@ -12,5 +12,5 @@ parseInput = some xs
 
 partOneTests = [("1,9,10,3,2,3,11,0,99,30,40,50",3500)]
 
--- partOne :: [Int] -> Int
--- partOne i = 654
+partOne :: [Int] -> Int
+partOne _ = 654
