@@ -35,6 +35,7 @@ getNext 6 = selectDir (5, 6, 3, 9)
 getNext 7 = selectDir (7, 8, 4, 7)
 getNext 8 = selectDir (7, 9, 5, 8)
 getNext 9 = selectDir (8, 9, 6, 9)
+getNext _ = error "Invalid number"
 
 --     1
 --   2 3 4
@@ -55,6 +56,7 @@ getNext2 'A' = selectDir ('A', 'B', '6', 'C')
 getNext2 'B' = selectDir ('A', 'C', '7', 'D')
 getNext2 'C' = selectDir ('B', 'C', '8', 'C')
 getNext2 'D' = selectDir ('D', 'D', 'B', 'D')
+getNext2 _ = error "Invalid number"
 
 getCode :: (a -> Direction -> a) -> a -> [[Direction]] -> [a]
 getCode nextFn n = tail . scanl getNumber n 

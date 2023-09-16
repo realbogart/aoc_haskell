@@ -15,6 +15,6 @@ partOne = sum . map minMaxDiff
         minMaxDiff xs = abs $ subtract (minimum xs) (maximum xs)
 
 partTwo = sum . map (sum . keepDivisable)
-  where keepDivisable = map fst . filter (\(q,r) -> r == 0) . map (uncurry quotRem) . twoPerms
-        twoPerms xs = [(x,y) | x <- xs, y <- xs, x/=y]
+  where keepDivisable = map fst . filter (\(_,r) -> r == 0) . map (uncurry quotRem) . twoPerms
+        twoPerms xs = [(x,y) | x <- xs, y <- xs, x /= y]
 

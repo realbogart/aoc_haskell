@@ -6,7 +6,6 @@ module AoC (
   module Text.Pretty.Simple,
   module Control.Monad,
   module Control.Applicative,
-  module Data.List,
   module Data.Function,
   module Data.Maybe,
   module Data.Char,
@@ -15,16 +14,25 @@ module AoC (
   parseGroupsLineSeparated,
   comb2,
   perm2,
-  T.pack
+  T.pack,
+  parseAndApply,
+  parseTestAndSolve,
+  L.sort,
+  L.foldl',
+  L.inits,
+  L.scanl,
+  L.scanl',
+  L.group,
+  L.tails
 ) where
 
 import Text.Megaparsec(Parsec, parse, manyTill, anySingle, errorBundlePretty, many, eof, choice, optional, some)
 import Text.Megaparsec.Char(eol, letterChar, digitChar, string, char, tab, space, spaceChar, hspace1)
 import Text.Megaparsec.Char.Lexer(decimal)
 
-import Data.List
-import qualified Data.Text as T
-import qualified Data.Text.IO as TIO
+import Data.List qualified as L
+import Data.Text qualified as T
+import Data.Text.IO qualified as TIO
 import Data.Void
 import Data.Function (on)
 import Data.Maybe (isJust)
@@ -34,9 +42,8 @@ import Control.Monad (void)
 import Control.Applicative ((<|>))
 
 import Text.Pretty.Simple (pPrint)
-import qualified Distribution.PackageDescription as Text.Pretty
 
-comb2 xs = [(x,y) | (x:ys) <- tails xs, y <- ys]
+comb2 xs = [(x,y) | (x:ys) <- L.tails xs, y <- ys]
 perm2 xs = [(x,y) | x <- xs, y <- xs, x /= y]
 
 type Parser = Parsec Void T.Text
@@ -45,7 +52,7 @@ parseLineSeparated :: Parser a -> Parser [a]
 parseLineSeparated p = some (p <* optional eol) 
 
 parseGroupsLineSeparated :: Parser a -> Parser [[a]]
-parseGroupsLineSeparated p = some ((parseLineSeparated p) <* optional eol) 
+parseGroupsLineSeparated p = some (parseLineSeparated p <* optional eol) 
 
 parseAndApply :: Show b => Parser a -> (a -> b) -> FilePath -> IO ()
 parseAndApply p f inputfile = do
@@ -74,7 +81,7 @@ parseTestAndSolve parseFn solveFn tests inputFile = do
   where 
     parseTest (input, _) = parse parseFn "" input
 
-    verifyTestResult ((textInput,expectedOutput), input, output) =
+    verifyTestResult ((_,expectedOutput), input, output) =
       if output == expectedOutput
       then do
         TIO.putStrLn $ "[Ok]\t\t" <> (T.pack . show) input <> "\n\t\t= " <> (T.pack . show) output

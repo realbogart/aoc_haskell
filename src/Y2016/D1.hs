@@ -31,7 +31,7 @@ parseMove :: Parser Move
 parseMove = do
   turn <- TurnLeft <$ char 'L' <|> TurnRight <$ char 'R'
   steps <- decimal
-  delim <- choice [void $ string ", ", eof, void eol]
+  _ <- choice [void $ string ", ", eof, void eol]
   return $ Move turn steps
 
 parseInput = many parseMove
@@ -66,13 +66,13 @@ getAllIntersectionsForLine :: Line -> [Line] -> [Maybe Pos]
 getAllIntersectionsForLine l = filter isJust . map (getIntersection l)
 
 getAllIntersections :: [Line] -> [[Maybe Pos]]
-getAllIntersections lines = filter (not . null) $ zipWith getAllIntersectionsForLine lines (inits lines)
+getAllIntersections ls = filter (not . null) $ zipWith getAllIntersectionsForLine ls (inits ls)
 
 getFirstIntersection :: [Line] -> Maybe Pos
 getFirstIntersection = getFirstValid . getAllIntersections
   where getFirstValid :: [[Maybe Pos]] -> Maybe Pos 
         getFirstValid [] = Nothing
-        getFirstValid (i:is) = head i
+        getFirstValid (i:_) = head i
 
 partTwo :: [Move] -> Maybe Int
 partTwo moves = manhattanToOrigo <$> (getFirstIntersection . map snd . scanl' (getWalkLine . f) (Vec2 0 1, Line (Vec2 0 0) (Vec2 0 0)) $ moves)

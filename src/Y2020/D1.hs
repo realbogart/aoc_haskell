@@ -12,10 +12,10 @@ partOneTests = [(input, [514579])]
 partTwoTests = [(input, [241861950])]
 
 partOne :: [Int] -> [Int]
-partOne = map product . filter ((==2020) . sum) . combinationsOfTwo
+partOne = map product . filter ((== 2020) . sum) . combinationsOfTwo
   where combinationsOfTwo xs = [ [x,y] | (x:ys) <- tails xs, y <- ys ]
 
 partTwo :: [Int] -> [Int]
-partTwo = map product . filter ((==2020) . sum) . combinationsOfThree
+partTwo = map product . filter ((== 2020) . sum) . combinationsOfThree
   where combinationsOfThree xs = [ [x,y,z] | (x:ys) <- tails xs, (y:zs) <- tails ys, z <- zs ]
 
