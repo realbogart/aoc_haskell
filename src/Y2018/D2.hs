@@ -13,10 +13,8 @@ partOne boxes = (length . filter id . map twos) boxes * (length . filter id . ma
         threes = elem 3 . map length . group . sort 
 
 partTwo :: [[Char]] -> Text
-partTwo = pack . removeDiffering . head . filter ((==1) . length . removeMatching) . comb2
-  where removeMatching (a:as,b:bs)  | a == b = removeMatching (as,bs)
-                                    | otherwise = a : removeMatching (as,bs)
-        removeMatching _ = []
-        removeDiffering (a:as,b:bs) | a == b = a : removeDiffering (as,bs)
-                                    | otherwise = removeDiffering (as,bs)
-        removeDiffering _ = []
+partTwo = pack . removePred (/=) . head . filter ((==1) . length . removePred (==)) . comb2
+  where removePred f (a:as,b:bs)  | f a b = removePred f (as,bs)
+                                  | otherwise = a : removePred f (as,bs)
+        removePred _ _ = []
+
