@@ -12,6 +12,7 @@ library
     exposed-modules:  AoC,
                       Y2015.D1
                       Y2015.D2
+                      Y2015.D3
                       Y2016.D1
                       Y2016.D2
                       Y2017.D1
