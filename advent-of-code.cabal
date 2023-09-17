@@ -21,6 +21,7 @@ library
                       Y2019.D1
                       Y2019.D2
                       Y2020.D1
+                      Y2020.D2
                       Y2021.D1
                       Y2022.D1
     -- other-modules:    Y2020
