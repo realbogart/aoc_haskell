@@ -23,6 +23,7 @@ library
                       Y2020.D1
                       Y2020.D2
                       Y2021.D1
+                      Y2021.D2
                       Y2022.D1
     -- other-modules:    Y2020
     build-depends:    base ^>=4.16.4.0,
