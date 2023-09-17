@@ -23,7 +23,8 @@ module AoC (
   L.scanl,
   L.scanl',
   L.group,
-  L.tails
+  L.tails,
+  L.find
 ) where
 
 import Text.Megaparsec(Parsec, parse, manyTill, anySingle, errorBundlePretty, many, eof, choice, optional, some)
