@@ -39,7 +39,7 @@ import Data.List.Split
 import Data.Text.IO qualified as TIO
 import Data.Void
 import Data.Function (on)
-import Data.Maybe (isJust)
+import Data.Maybe (isJust, fromJust, catMaybes)
 import Data.Char (digitToInt)
 
 import Control.Monad (void)
