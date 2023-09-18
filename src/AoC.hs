@@ -9,6 +9,7 @@ module AoC (
   module Data.Function,
   module Data.Maybe,
   module Data.Char,
+  module Data.List.Split,
   T.Text,
   parseLineSeparated,
   parseGroupsLineSeparated,
@@ -33,6 +34,7 @@ import Text.Megaparsec.Char.Lexer(decimal)
 
 import Data.List qualified as L
 import Data.Text qualified as T
+import Data.List.Split
 import Data.Text.IO qualified as TIO
 import Data.Void
 import Data.Function (on)

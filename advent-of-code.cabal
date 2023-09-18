@@ -15,6 +15,7 @@ library
                       Y2015.D3
                       Y2016.D1
                       Y2016.D2
+                      Y2016.D3
                       Y2017.D1
                       Y2017.D2
                       Y2018.D1
@@ -33,7 +34,8 @@ library
                       text ==1.2.5.0,
                       pretty-simple ==4.1.2.0,
                       containers ==0.6.7,
-                      vector ==0.13.0.0
+                      vector ==0.13.0.0,
+                      split ==0.2.3.5
     hs-source-dirs:   src
     default-language: GHC2021
     default-extensions: OverloadedStrings
