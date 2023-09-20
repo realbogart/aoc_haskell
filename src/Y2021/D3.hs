@@ -13,16 +13,24 @@ getIndices l = [0..length l - 1]
 getColumn l n = map (!! n) l
 
 getMostCommon :: Ord a => [a] -> a
-getMostCommon = snd . maximum . map (\l -> (length l, head l)) . group . reverse . sort
+getMostCommon = snd . maximum . map (\l -> (length l, head l)) . group . sort
 
-invert = map (\x -> if x == 0 then 1 else 0)
+invertBit x = if x == 0 then 1 else 0
+invert = map invertBit 
 toDecimal = sum . zipWith (*) [2 ^ n | n <- [0..]] . reverse
+
+ratingFinder _ [] _ = error "No oxygen generator rating found"
+ratingFinder f candidates pos  | length matches == 1 = toDecimal $ head matches
+                               | otherwise = ratingFinder f matches (pos + 1)
+  where mc = map (f . getColumn candidates) (getIndices $ head candidates)
+        matches = filter (\c -> (c !! pos) == (mc !! pos)) candidates
+        
+oxygenGenerator = ratingFinder getMostCommon
+scrubberRating = ratingFinder (invertBit . getMostCommon)
 
 partOne l = toDecimal gamma * toDecimal epsilon
   where gamma = map (getMostCommon . getColumn l) (getIndices $ head l)
         epsilon = invert gamma
 
-partTwo l = 5
-  where mc = map (getMostCommon . getColumn l) (getIndices $ head l)
-        lc = invert mc
+partTwo l = oxygenGenerator l 0 * scrubberRating l 0
 
