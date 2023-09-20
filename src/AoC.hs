@@ -40,7 +40,7 @@ import Data.Text.IO qualified as TIO
 import Data.Void
 import Data.Function (on)
 import Data.Maybe (isJust, fromJust, catMaybes, mapMaybe)
-import Data.Char (digitToInt)
+import Data.Char (digitToInt, ord, isUpper)
 
 import Control.Monad (void)
 import Control.Applicative ((<|>))
