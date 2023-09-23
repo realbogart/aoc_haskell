@@ -13,6 +13,7 @@ library
                       Y2015.D1
                       Y2015.D2
                       Y2015.D3
+                      Y2015.D4
                       Y2016.D1
                       Y2016.D2
                       Y2016.D3
@@ -41,7 +42,9 @@ library
                       pretty-simple ==4.1.2.0,
                       containers ==0.6.7,
                       vector ==0.13.0.0,
-                      split ==0.2.3.5
+                      split ==0.2.3.5,
+                      cryptonite ==0.30,
+                      bytestring ==0.11.5.2
     hs-source-dirs:   src
     default-language: GHC2021
     default-extensions: OverloadedStrings
