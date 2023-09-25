@@ -20,6 +20,7 @@ module AoC (
   parseAndApply,
   parseTestAndSolve,
   L.sort,
+  L.sortBy,
   L.foldl',
   L.inits,
   L.scanl,
@@ -43,7 +44,7 @@ import Data.Text.IO qualified as TIO
 import Data.Void
 import Data.Function (on)
 import Data.Maybe (isJust, fromJust, catMaybes, mapMaybe)
-import Data.Char (digitToInt, ord, isUpper)
+import Data.Char (digitToInt, ord, chr, isUpper)
 
 import Control.Monad (void)
 import Control.Applicative ((<|>))
