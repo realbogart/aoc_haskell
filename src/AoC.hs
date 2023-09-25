@@ -10,6 +10,7 @@ module AoC (
   module Data.Maybe,
   module Data.Char,
   module Data.List.Split,
+  module Debug.Trace,
   T.Text,
   parseLineSeparated,
   parseGroupsLineSeparated,
@@ -28,6 +29,8 @@ module AoC (
   L.find,
   L.delete
 ) where
+
+import Debug.Trace
 
 import Text.Megaparsec(Parsec, parse, manyTill, anySingle, errorBundlePretty, many, eof, choice, optional, some)
 import Text.Megaparsec.Char(eol, letterChar, digitChar, string, char, tab, space, spaceChar, hspace1)
