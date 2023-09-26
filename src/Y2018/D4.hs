@@ -25,13 +25,11 @@ data EntryData = EntryData
 
 parseTimestamp :: Parser Timestamp
 parseTimestamp = do 
-  _ <- char '['
-  y <- decimal <* char '-'
+  y <- char '[' *> decimal <* char '-'
   mo <- decimal <* char '-'
   d <- decimal <* hspace
   h <- decimal <* char ':'
-  m <- decimal
-  _ <- char ']'
+  m <- decimal <* char ']'
   return $ Timestamp y mo d h m
 
 parseInput :: Parser [EntryData]
