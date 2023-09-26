@@ -34,7 +34,7 @@ module AoC (
 import Debug.Trace
 
 import Text.Megaparsec(Parsec, parse, manyTill, anySingle, errorBundlePretty, many, eof, choice, optional, some)
-import Text.Megaparsec.Char(eol, letterChar, digitChar, string, char, tab, space, spaceChar, hspace1)
+import Text.Megaparsec.Char(eol, letterChar, digitChar, string, char, tab, space, spaceChar, hspace, hspace1)
 import Text.Megaparsec.Char.Lexer(decimal)
 
 import Data.List qualified as L
