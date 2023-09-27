@@ -29,6 +29,7 @@ library
                       Y2019.D1
                       Y2019.D2
                       Y2019.D3
+                      Y2019.D4
                       Y2020.D1
                       Y2020.D2
                       Y2020.D3
@@ -47,7 +48,8 @@ library
                       vector ==0.13.0.0,
                       split ==0.2.3.5,
                       cryptonite ==0.30,
-                      bytestring ==0.11.5.2
+                      bytestring ==0.11.5.2,
+                      groupBy ==0.1.0.0
     hs-source-dirs:   src
     default-language: GHC2021
     default-extensions: OverloadedStrings
