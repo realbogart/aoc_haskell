@@ -26,9 +26,12 @@ module AoC (
   L.scanl,
   L.scanl',
   L.group,
+  L.groupBy,
   L.tails,
   L.find,
-  L.delete
+  L.delete,
+  minimumBy,
+  maximumBy
 ) where
 
 import Debug.Trace
@@ -45,6 +48,7 @@ import Data.Void
 import Data.Function (on)
 import Data.Maybe (isJust, fromJust, catMaybes, mapMaybe)
 import Data.Char (digitToInt, ord, chr, isUpper)
+import Data.Foldable (minimumBy, maximumBy)
 
 import Control.Monad (void)
 import Control.Applicative ((<|>))
