@@ -14,17 +14,17 @@ firstAndLast l = [head l, last l]
 
 transformNumbers [] = []
 transformNumbers cs 
-  | "one" `isPrefixOf` cs = '1' : transformNumbers rest
-  | "two" `isPrefixOf` cs = '2' : transformNumbers rest
-  | "three" `isPrefixOf` cs = '3' : transformNumbers rest
-  | "four" `isPrefixOf` cs = '4' : transformNumbers rest
-  | "five" `isPrefixOf` cs = '5' : transformNumbers rest
-  | "six" `isPrefixOf` cs = '6' : transformNumbers rest
-  | "seven" `isPrefixOf` cs = '7' : transformNumbers rest
-  | "eight" `isPrefixOf` cs = '8' : transformNumbers rest
-  | "nine" `isPrefixOf` cs = '9' : transformNumbers rest
-  | otherwise = head cs : transformNumbers rest
-  where rest = tail cs
+  | "one"   `isPrefixOf` cs = '1' : rest
+  | "two"   `isPrefixOf` cs = '2' : rest
+  | "three" `isPrefixOf` cs = '3' : rest
+  | "four"  `isPrefixOf` cs = '4' : rest
+  | "five"  `isPrefixOf` cs = '5' : rest
+  | "six"   `isPrefixOf` cs = '6' : rest
+  | "seven" `isPrefixOf` cs = '7' : rest
+  | "eight" `isPrefixOf` cs = '8' : rest
+  | "nine"  `isPrefixOf` cs = '9' : rest
+  | otherwise = head cs : rest
+  where rest = transformNumbers (tail cs)
 
 solve = sum . map (read . firstAndLast . filter isDigit)
 
