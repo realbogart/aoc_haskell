@@ -59,11 +59,11 @@ partTwoTests = [(input, 4455)]
 
 getSleepEntries = filter (\EntryData{entry_type = et} -> et /= ShiftStart)
 getSleepShifts = map getSleepShift . chunksOf 2 . getSleepEntries
-  where getSleepShift [sleep,awake] = SleepShift (guard_id sleep) (minute(timestamp sleep)) (minute(timestamp awake))
+  where getSleepShift [sleep,awake] = SleepShift sleep.guard_id sleep.timestamp.minute awake.timestamp.minute
         getSleepShift _ = error "Corrupt/incomplete sleep entries"
 
-compareGuard a b = compare (sleep_guard_id a) (sleep_guard_id b)
-matchingGuard a b = sleep_guard_id a == sleep_guard_id b
+compareGuard a b = compare a.sleep_guard_id b.sleep_guard_id
+matchingGuard a b = a.sleep_guard_id == b.sleep_guard_id
 groupGuards = groupBy matchingGuard . sortBy compareGuard 
 
 getTotalMinutes :: [SleepShift] -> [(Int, Int)]

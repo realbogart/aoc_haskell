@@ -23,16 +23,17 @@ parseInput = parseLineSeparated parseTriangle
 partOneTests = [("5 10 25", 0)]
 partTwoTests = []
 
-validTriangle t = a t + b t > c t &&
-                  a t + c t > b t &&
-                  b t + c t > a t
+validTriangle :: Triangle -> Bool
+validTriangle t = t.a + t.b > t.c &&
+                  t.a + t.c > t.b &&
+                  t.b + t.c > t.a
 
 countValid f = length . filter id . map f
 
 convertThreeTriangles :: [Triangle] -> [Triangle]
-convertThreeTriangles [t1, t2, t3] = [Triangle (a t1) (a t2) (a t3), 
-                                      Triangle (b t1) (b t2) (b t3), 
-                                      Triangle (c t1) (c t2) (c t3)] 
+convertThreeTriangles [t1, t2, t3] = [Triangle (t1.a) (t2.a) (t3.a), 
+                                      Triangle (t1.b) (t2.b) (t3.b), 
+                                      Triangle (t1.c) (t2.c) (t3.c)] 
 convertThreeTriangles _ = []
 
 convertTriangles = concatMap convertThreeTriangles . chunksOf 3

@@ -45,13 +45,13 @@ partOne :: [Move] -> Int
 partOne = manhattanToOrigo . fst . foldl' turnAndWalk (Vec2 0 0, Vec2 0 1)
   where turnAndWalk :: (Pos, Dir) -> Move -> (Pos, Dir) 
         turnAndWalk (Vec2 px py, d) m = (Vec2 (px + ndx * s) (py + ndy * s), Vec2 ndx ndy)
-                                          where (Vec2 ndx ndy) = turnDir (turn m) d
-                                                s = steps m
+                                          where (Vec2 ndx ndy) = turnDir (m.turn) d
+                                                s = m.steps
 
 getWalkLine :: (Dir,Pos) -> Move -> (Dir,Line)
 getWalkLine (d,Vec2 px py) m = (Vec2 ndx ndy, Line (Vec2 (px + ndx) (py + ndy)) (Vec2 (px + ndx * s) (py + ndy * s)))
-  where (Vec2 ndx ndy) = turnDir (turn m) d 
-        s = steps m
+  where (Vec2 ndx ndy) = turnDir (m.turn) d 
+        s = m.steps 
 
 isEqualOrBetween :: Int -> Int -> Int -> Bool
 isEqualOrBetween n t1 t2 = n >= min t1 t2 && n <= max t1 t2

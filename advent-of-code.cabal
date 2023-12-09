@@ -40,6 +40,7 @@ library
                       Y2022.D1
                       Y2022.D2
                       Y2023.D1
+                      Y2023.D2
     -- other-modules:    Y2020
     build-depends:    base ^>=4.18.1.0,
                       megaparsec ==9.5.0,
@@ -53,7 +54,11 @@ library
                       groupBy ==0.1.0.0
     hs-source-dirs:   src
     default-language: GHC2021
-    default-extensions: OverloadedStrings
+    default-extensions: OverloadedStrings,
+                        DuplicateRecordFields,
+                        NoFieldSelectors,
+                        StrictData,
+                        OverloadedRecordDot
     ghc-options:      -Weverything -Wno-missing-signatures -Wno-missing-exported-signatures
                       -Wno-implicit-prelude -Wno-missing-export-lists -Wno-missing-import-lists
                       -Wno-monomorphism-restriction -Wno-type-defaults -Wno-missing-safe-haskell-mode

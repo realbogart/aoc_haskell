@@ -26,15 +26,18 @@ parseInput = parseLineSeparated parseEntry
 partOneTests = [("1-3 a: abcde\n1-3 b: cdefg\n2-9 c: ccccccccc", 2)]
 partTwoTests = [("1-3 a: abcde\n1-3 b: cdefg\n2-9 c: ccccccccc", 1)]
 
-valid1 e = occurrences >= low e && occurrences <= high e 
-  where occurrences = length $ filter (== letter e) $ password e
+valid1 e = occurrences >= e.low && occurrences <= e.high 
+  where occurrences = length $ filter (== e.letter) e.password
 
 valid2 e = (a /= b) && ((a == l) || (b == l)) 
-  where p = password e
-        a = p !! (low e - 1)
-        b = p !! (high e - 1)
-        l = letter e
+  where p = e.password
+        a = p !! (e.low - 1)
+        b = p !! (e.high - 1)
+        l = e.letter
 
+partOne :: [PasswordEntry] -> Int
 partOne = length . filter valid1
+
+partTwo :: [PasswordEntry] -> Int
 partTwo = length . filter valid2
 

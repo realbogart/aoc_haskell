@@ -37,27 +37,27 @@ partOneTests = [(input, 4)]
 partTwoTests = [(input, 3)]
 
 getClaimSquares :: Claim -> [Square]
-getClaimSquares c = [Square sx sy | sx <- [x c..(w c + x c - 1)], sy <- [y c..(h c + y c - 1)]]
+getClaimSquares c = [Square sx sy | sx <- [c.x..(c.w + c.x - 1)], sy <- [c.y..(c.h + c.y - 1)]]
 
 claimsIntersect :: Claim -> Claim -> Bool
 claimsIntersect a b = a_x + a_w > b_x &&
                       a_y + a_h > b_y &&
                       b_x + b_w > a_x &&
                       b_y + b_h > a_y
-  where a_x = x a
-        a_y = y a
-        a_w = w a
-        a_h = h a
-        b_x = x b
-        b_y = y b
-        b_w = w b
-        b_h = h b
+  where a_x = a.x
+        a_y = a.y
+        a_w = a.w
+        a_h = a.h
+        b_x = b.x
+        b_y = b.y
+        b_w = b.w
+        b_h = b.h
 
 partOne :: [Claim] -> Int
 partOne = length . filter ((> 1) . length) . group . sort . concatMap getClaimSquares
 
 partTwo :: [Claim] -> Int
-partTwo v = cid $ head $ foldl' deleteClaims v tests
+partTwo v = (head $ foldl' deleteClaims v tests).cid
   where tests = filter (uncurry claimsIntersect) . comb2 $ v
         deleteClaims claims (a, b) = delete a . delete b $ claims 
 

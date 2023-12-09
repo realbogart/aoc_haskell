@@ -48,6 +48,9 @@ translateMove Scissors Rock = Paper
 translateMove Scissors Scissors = Rock
 translateMove o Paper = o
 
-partOne = sum . map (uncurry scoreRound . (\r -> (opponent r, you r)))
-partTwo = sum . map (uncurry scoreRound . (\r -> (opponent r, translateMove (opponent r) (you r))))
+partOne :: [Round] -> Int
+partOne = sum . map (uncurry scoreRound . (\r -> (r.opponent, r.you)))
+
+partTwo :: [Round] -> Int
+partTwo = sum . map (uncurry scoreRound . (\r -> (r.opponent, translateMove r.opponent r.you)))
 

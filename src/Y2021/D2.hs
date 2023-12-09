@@ -31,14 +31,14 @@ partOneTests = [(input, 150)]
 partTwoTests = [(input, 900)]
 
 partOne :: [Command] -> Int
-partOne = (\p -> horizontal p * depth p) . foldl' move (Position 0 0 0)
+partOne = (\p -> p.horizontal * p.depth) . foldl' move (Position 0 0 0)
   where move :: Position -> Command -> Position
         move (Position h d a) (Command Up u)      = Position h (d - u) a
         move (Position h d a) (Command Down u)    = Position h (d + u) a
         move (Position h d a) (Command Forward u) = Position (h + u) d a
 
 partTwo :: [Command] -> Int
-partTwo = (\p -> horizontal p * depth p) . foldl' move (Position 0 0 0)
+partTwo = (\p -> p.horizontal * p.depth) . foldl' move (Position 0 0 0)
   where move :: Position -> Command -> Position
         move (Position h d a) (Command Up u)      = Position h d (a - u)
         move (Position h d a) (Command Down u)    = Position h d (a + u)
