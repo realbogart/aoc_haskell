@@ -31,14 +31,15 @@ module AoC (
   L.find,
   L.delete,
   L.isPrefixOf,
+  L.singleton,
   minimumBy,
   maximumBy
 ) where
 
 import Debug.Trace
 
-import Text.Megaparsec(Parsec, parse, manyTill, anySingle, errorBundlePretty, many, eof, choice, optional, some, count, anySingleBut)
-import Text.Megaparsec.Char(eol, letterChar, numberChar, digitChar, string, char, tab, space, spaceChar, hspace, hspace1)
+import Text.Megaparsec(Parsec, parse, manyTill, anySingle, errorBundlePretty, many, eof, choice, optional, some, count, anySingleBut, getOffset, notFollowedBy)
+import Text.Megaparsec.Char(eol, letterChar, numberChar, digitChar, string, char, tab, space, spaceChar, hspace, hspace1, latin1Char)
 import Text.Megaparsec.Char.Lexer(decimal)
 
 import Data.List qualified as L
@@ -48,7 +49,7 @@ import Data.Text.IO qualified as TIO
 import Data.Void
 import Data.Function (on)
 import Data.Maybe (isJust, fromJust, catMaybes, mapMaybe)
-import Data.Char (digitToInt, ord, chr, isUpper)
+import Data.Char (digitToInt, ord, chr, isUpper, isDigit)
 import Data.Foldable (minimumBy, maximumBy)
 
 import Control.Monad (void)

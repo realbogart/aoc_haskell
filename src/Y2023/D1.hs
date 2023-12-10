@@ -1,7 +1,6 @@
 module Y2023.D1 where
 
 import AoC
-import Data.Char (isDigit)
 
 default (Int, Text)
 
