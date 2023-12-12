@@ -105,8 +105,8 @@ mapRange targets m = concatMap transformValueRange targets
 applyMaps :: [Map] -> Int -> Int
 applyMaps maps v = foldl' mapValue v maps
 
-applyMapsToRange :: [Map] -> Range -> [Range]
-applyMapsToRange maps r = foldl' mapRange r maps
+applyMapsToRange :: [Map] -> [Range] -> [Range]
+applyMapsToRange maps ranges = foldl' mapRange ranges maps
 
 getSeedRanges :: [Int] -> [Range]
 getSeedRanges = map getSeedRange . chunksOf 2
@@ -117,5 +117,7 @@ partOne :: Almanac -> Int
 partOne a = minimum (map (applyMaps a.maps) a.seeds)
 
 partTwo :: Almanac -> Int
-partTwo a = minimum (concatMap (applyMapsToRange a.maps) seed_ranges)
+partTwo a = (head sorted_mapped_ranges).source
   where seed_ranges = getSeedRanges a.seeds
+        mapped_ranges = applyMapsToRange a.maps seed_ranges
+        sorted_mapped_ranges = sortRangesBySource mapped_ranges
