@@ -11,6 +11,7 @@ module AoC (
   module Data.Char,
   module Data.List.Split,
   module Debug.Trace,
+  module Data.Ord,
   T.Text,
   parseLineSeparated,
   parseGroupsLineSeparated,
@@ -51,6 +52,7 @@ import Data.Function (on)
 import Data.Maybe (isJust, fromJust, catMaybes, mapMaybe)
 import Data.Char (digitToInt, ord, chr, isUpper, isDigit)
 import Data.Foldable (minimumBy, maximumBy)
+import Data.Ord (comparing, Down(..))
 
 import Control.Monad (void)
 import Control.Applicative ((<|>))

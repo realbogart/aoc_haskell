@@ -41,3 +41,4 @@ partOne = product . map getBrokenRecords
 partTwo :: [Race] -> Int
 partTwo races = getBrokenRecords big_race
   where big_race = getBigRace races
+

@@ -4,7 +4,7 @@ import AoC
 
 default (Text, Int)
 
-data Direction = Up | Down | Forward
+data Direction = DirUp | DirDown | DirForward
   deriving (Show)
 
 data Command = Command
@@ -20,7 +20,7 @@ data Position = Position
 
 parseInput = parseLineSeparated parseCommand
   where parseCommand = do          
-         d <- choice [Up <$ string "up", Down <$ string "down", Forward <$ string "forward"]
+         d <- choice [DirUp <$ string "up", DirDown <$ string "down", DirForward <$ string "forward"]
          _ <- hspace1
          u <- decimal
          return $ Command d u
@@ -33,14 +33,14 @@ partTwoTests = [(input, 900)]
 partOne :: [Command] -> Int
 partOne = (\p -> p.horizontal * p.depth) . foldl' move (Position 0 0 0)
   where move :: Position -> Command -> Position
-        move (Position h d a) (Command Up u)      = Position h (d - u) a
-        move (Position h d a) (Command Down u)    = Position h (d + u) a
-        move (Position h d a) (Command Forward u) = Position (h + u) d a
+        move (Position h d a) (Command DirUp u)      = Position h (d - u) a
+        move (Position h d a) (Command DirDown u)    = Position h (d + u) a
+        move (Position h d a) (Command DirForward u) = Position (h + u) d a
 
 partTwo :: [Command] -> Int
 partTwo = (\p -> p.horizontal * p.depth) . foldl' move (Position 0 0 0)
   where move :: Position -> Command -> Position
-        move (Position h d a) (Command Up u)      = Position h d (a - u)
-        move (Position h d a) (Command Down u)    = Position h d (a + u)
-        move (Position h d a) (Command Forward u) = Position (h + u) (d + a * u) a
+        move (Position h d a) (Command DirUp u)      = Position h d (a - u)
+        move (Position h d a) (Command DirDown u)    = Position h d (a + u)
+        move (Position h d a) (Command DirForward u) = Position (h + u) (d + a * u) a
 
