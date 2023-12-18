@@ -73,10 +73,17 @@ library
                       -Wno-all-missed-specialisations -Wno-missed-specialisations
                       -Wno-missing-deriving-strategies -Wno-prepositive-qualified-module
 
+executable benchit
+    build-depends:  base ^>=4.18.1.0,
+                    advent-of-code
+    ghc-options:    -prof -fprof-auto
+    main-is:        Main.hs
+    hs-source-dirs: benchit
+
 test-suite advent-of-code-test
     default-language: GHC2021
     type:             exitcode-stdio-1.0
     hs-source-dirs:   test
     main-is:          MyLibTest.hs
-    build-depends:    base ^>=4.16.4.0
+    build-depends:    base ^>=4.18.1.0,
 
