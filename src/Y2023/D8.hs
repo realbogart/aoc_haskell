@@ -7,6 +7,8 @@ default (Int, Text)
 
 partOneTests = [("RL\n\nAAA = (BBB, CCC)\nBBB = (DDD, EEE)\nCCC = (ZZZ, GGG)\nDDD = (DDD, DDD)\nEEE = (EEE, EEE)\nGGG = (GGG, GGG)\nZZZ = (ZZZ, ZZZ)", 2), ("LLR\n\nAAA = (BBB, BBB)\nBBB = (AAA, ZZZ)\nZZZ = (ZZZ, ZZZ)", 6)]
 
+partTwoTests = [("LR\n\n11A = (11B, XXX)\n11B = (XXX, 11Z)\n11Z = (11B, XXX)\n22A = (22B, XXX)\n22B = (22C, 22C)\n22C = (22Z, 22Z)\n22Z = (22B, 22B)\nXXX = (XXX, XXX)", 6)]
+
 type Instructions = [Char]
 type NodeID = [Char]
 
@@ -15,6 +17,8 @@ data Node = Node
   , left :: NodeID
   , right :: NodeID
   } deriving (Show)
+
+source node = node.source
 
 data NodeNetwork = NodeNetwork
   { instructions :: Instructions
@@ -38,13 +42,13 @@ parseInput = do
           _ <- char ',' <* space
           right_id <- parseNodeID <* char ')'
           return $ Node source_id left_id right_id
-        parseNodeID = count 3 letterChar
+        parseNodeID = count 3 (letterChar <|> digitChar)
 
 getNodeConnections :: NodeNetwork -> NodeConnections
 getNodeConnections nn = HMS.fromList (map (\node -> (node.source, (node.left, node.right))) nn.nodes)
 
-step :: NodeConnections -> NodeID -> Char -> NodeID
-step ncs nid dir = case target of
+step :: NodeConnections -> Char -> NodeID -> NodeID
+step ncs dir nid = case target of
                       Just (l, r) -> if dir == 'L' then l else r
                       Nothing -> error ("Invalid node: " ++ show nid ++ " going " ++ [dir])
   where target = HMS.lookup nid ncs 
@@ -53,10 +57,25 @@ countSteps :: NodeConnections -> Instructions -> NodeID -> NodeID -> Int -> Int
 countSteps ncs is from to acc | next_node == to = acc + 1
                               | otherwise = countSteps ncs (tail is) next_node to (acc + 1)
   where next_instruction = head is
-        next_node = step ncs from next_instruction 
+        next_node = step ncs next_instruction from 
+
+countSteps2 :: NodeConnections -> Instructions -> [NodeID] -> Int -> Int
+countSteps2 ncs is from acc | all endNode next_nodes = acc + 1
+                            | otherwise = countSteps2 ncs (tail is) next_nodes (acc + 1)
+  where next_instruction = head is
+        next_nodes = map (step ncs next_instruction) from
+        endNode [_,_,'Z'] = True
+        endNode _ = False
 
 partOne :: NodeNetwork -> Int
 partOne nn = countSteps ncs instructions "AAA" "ZZZ" 0
   where ncs = getNodeConnections nn
         instructions = cycle nn.instructions
 
+partTwo :: NodeNetwork -> Int
+partTwo nn = countSteps2 ncs instructions start_nodes 0
+  where ncs = getNodeConnections nn
+        instructions = cycle nn.instructions
+        start_nodes = (filter start_node . map source) nn.nodes
+        start_node [_,_,'A'] = True
+        start_node _ = False
