@@ -1,7 +1,62 @@
 module Y2023.D8 where
 
 import AoC
+import Data.HashMap.Strict qualified as HMS
 
 default (Int, Text)
 
+partOneTests = [("RL\n\nAAA = (BBB, CCC)\nBBB = (DDD, EEE)\nCCC = (ZZZ, GGG)\nDDD = (DDD, DDD)\nEEE = (EEE, EEE)\nGGG = (GGG, GGG)\nZZZ = (ZZZ, ZZZ)", 2), ("LLR\n\nAAA = (BBB, BBB)\nBBB = (AAA, ZZZ)\nZZZ = (ZZZ, ZZZ)", 6)]
+
+type Instructions = [Char]
+type NodeID = [Char]
+
+data Node = Node
+  { source :: NodeID
+  , left :: NodeID
+  , right :: NodeID
+  } deriving (Show)
+
+data NodeNetwork = NodeNetwork
+  { instructions :: Instructions
+  , nodes :: [Node]
+  } deriving (Show)
+
+type NodeConnections = HMS.HashMap NodeID (NodeID, NodeID)
+
+parseInput :: Parser NodeNetwork
+parseInput = do
+  instructions <- parseInstructions
+  NodeNetwork instructions <$> parseNodes
+  where parseInstructions :: Parser Instructions
+        parseInstructions = some (char 'L' <|> char 'R') <* space
+        parseNodes = parseLineSeparated parseNode
+        parseNode :: Parser Node
+        parseNode = do
+          source_id <- parseNodeID
+          _ <- space <* char '=' <* space <* char '('
+          left_id <- parseNodeID
+          _ <- char ',' <* space
+          right_id <- parseNodeID <* char ')'
+          return $ Node source_id left_id right_id
+        parseNodeID = count 3 letterChar
+
+getNodeConnections :: NodeNetwork -> NodeConnections
+getNodeConnections nn = HMS.fromList (map (\node -> (node.source, (node.left, node.right))) nn.nodes)
+
+step :: NodeConnections -> NodeID -> Char -> NodeID
+step ncs nid dir = case target of
+                      Just (l, r) -> if dir == 'L' then l else r
+                      Nothing -> error ("Invalid node: " ++ show nid ++ " going " ++ [dir])
+  where target = HMS.lookup nid ncs 
+
+countSteps :: NodeConnections -> Instructions -> NodeID -> NodeID -> Int -> Int
+countSteps ncs is from to acc | next_node == to = acc + 1
+                              | otherwise = countSteps ncs (tail is) next_node to (acc + 1)
+  where next_instruction = head is
+        next_node = step ncs from next_instruction 
+
+partOne :: NodeNetwork -> Int
+partOne nn = countSteps ncs instructions "AAA" "ZZZ" 0
+  where ncs = getNodeConnections nn
+        instructions = cycle nn.instructions
 
