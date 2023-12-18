@@ -76,7 +76,7 @@ library
 executable benchit
     build-depends:  base ^>=4.18.1.0,
                     advent-of-code
-    ghc-options:    -prof -fprof-auto
+    ghc-options:    -O2
     main-is:        Main.hs
     hs-source-dirs: benchit
 
