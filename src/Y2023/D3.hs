@@ -16,8 +16,8 @@ value p = p.value
 isSymbol p = p.is_symbol && not p.is_newline
 isValue p = not p.is_symbol && not p.is_newline
 
-parseInput = many (empty *> parsePart <* empty)
-  where empty = many (char '.')
+parseInput = many (empty_space *> parsePart <* empty_space)
+  where empty_space = many (char '.')
         parsePart :: Parser Part
         parsePart = do
           p <- getOffset

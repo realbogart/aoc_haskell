@@ -2,7 +2,6 @@ module AoC (
   Parser,
   module Text.Megaparsec, 
   module Text.Megaparsec.Char,
-  module Text.Megaparsec.Char.Lexer,
   module Text.Pretty.Simple,
   module Control.Monad,
   module Control.Applicative,
@@ -33,15 +32,19 @@ module AoC (
   L.delete,
   L.isPrefixOf,
   L.singleton,
+  Lex.decimal,
+  Lex.signed,
+  lexeme,
   minimumBy,
-  maximumBy
+  maximumBy,
+  sc
 ) where
 
 import Debug.Trace
 
-import Text.Megaparsec(Parsec, parse, manyTill, anySingle, errorBundlePretty, many, eof, choice, optional, some, count, anySingleBut, getOffset, notFollowedBy)
-import Text.Megaparsec.Char(eol, letterChar, numberChar, digitChar, string, char, tab, space, spaceChar, hspace, hspace1, latin1Char)
-import Text.Megaparsec.Char.Lexer(decimal)
+import Text.Megaparsec(Parsec, parse, manyTill, anySingle, errorBundlePretty, many, eof, choice, optional, some, count, anySingleBut, getOffset, notFollowedBy, empty)
+import Text.Megaparsec.Char(eol, letterChar, numberChar, digitChar, string, char, tab, space, space1, spaceChar, hspace, hspace1, latin1Char)
+import Text.Megaparsec.Char.Lexer qualified as Lex
 
 import Data.List qualified as L
 import Data.Text qualified as T
@@ -69,6 +72,12 @@ parseLineSeparated p = some (p <* optional eol)
 
 parseGroupsLineSeparated :: Parser a -> Parser [[a]]
 parseGroupsLineSeparated p = some (parseLineSeparated p <* optional eol) 
+
+sc :: Parser ()
+sc = Lex.space hspace1 empty empty
+
+lexeme :: Parser a -> Parser a
+lexeme = Lex.lexeme sc
 
 parseAndApply :: Show b => Parser a -> (a -> b) -> FilePath -> IO ()
 parseAndApply p f inputfile = do

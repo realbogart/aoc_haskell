@@ -51,10 +51,8 @@ getNodeConnections :: NodeNetwork -> NodeConnections
 getNodeConnections nn = HMS.fromList (map (\node -> (node.source, (node.left, node.right))) nn.nodes)
 
 step :: NodeConnections -> Char -> NodeID -> NodeID
-step ncs dir nid = case target of
-                    Just (l, r) -> if dir == 'L' then l else r
-                    Nothing -> error ("Invalid node: " ++ show nid ++ " going " ++ [dir])
-  where target = HMS.lookup nid ncs 
+step ncs dir nid = if dir == 'L' then l else r
+  where (l, r) = ncs HMS.! nid
 
 countSteps :: NodeConnections -> Instructions -> NodeID -> NodeID -> Int -> Int
 countSteps ncs is from to acc | next_node == to = acc + 1
@@ -63,12 +61,15 @@ countSteps ncs is from to acc | next_node == to = acc + 1
         next_node = step ncs next_instruction from 
 
 countSteps2 :: NodeConnections -> Instructions -> [NodeID] -> Int -> Int
-countSteps2 ncs is from acc | all endNode next_nodes = next_acc
-                            | otherwise = countSteps2 ncs future_instructions next_nodes next_acc
+countSteps2 ncs is from acc | done = next_acc
+                            | otherwise = trace (show is_done) $ countSteps2 ncs future_instructions next_nodes next_acc
   where next_instruction = head is
         future_instructions = tail is
         next_nodes = map (step ncs next_instruction) from
         next_acc = acc + 1
+        -- num_done = length $ filter endNode next_nodes
+        is_done = map endNode next_nodes
+        done = all endNode next_nodes
         endNode [_,_,'Z'] = True
         endNode _ = False
 
@@ -79,8 +80,8 @@ partOne nn = countSteps ncs instructions "AAA" "ZZZ" 0
 
 partTwo :: NodeNetwork -> Int
 partTwo nn = countSteps2 ncs instructions start_nodes 0
-  where !ncs = getNodeConnections nn
-        !instructions = cycle nn.instructions
-        !start_nodes = (filter start_node . map source) nn.nodes
+  where ncs = getNodeConnections nn
+        instructions = cycle nn.instructions
+        start_nodes = (filter start_node . map source) nn.nodes
         start_node [_,_,'A'] = True
         start_node _ = False
