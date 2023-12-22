@@ -37,7 +37,9 @@ module AoC (
   lexeme,
   minimumBy,
   maximumBy,
-  sc
+  sc,
+  parseInteger,
+  parseSignedInteger,
 ) where
 
 import Debug.Trace
@@ -67,17 +69,21 @@ perm2 xs = [(x,y) | x <- xs, y <- xs, x /= y]
 
 type Parser = Parsec Void T.Text
 
+default (Int)
+
 parseLineSeparated :: Parser a -> Parser [a]
 parseLineSeparated p = some (p <* optional eol) 
 
 parseGroupsLineSeparated :: Parser a -> Parser [[a]]
 parseGroupsLineSeparated p = some (parseLineSeparated p <* optional eol) 
 
-sc :: Parser ()
 sc = Lex.space hspace1 empty empty
 
 lexeme :: Parser a -> Parser a
 lexeme = Lex.lexeme sc
+
+parseInteger = lexeme Lex.decimal
+parseSignedInteger = Lex.signed sc parseInteger
 
 parseAndApply :: Show b => Parser a -> (a -> b) -> FilePath -> IO ()
 parseAndApply p f inputfile = do
