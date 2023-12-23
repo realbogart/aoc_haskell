@@ -8,7 +8,6 @@ module AoC (
   module Data.Function,
   module Data.Maybe,
   module Data.Char,
-  module Data.List.Split,
   module Debug.Trace,
   module Data.Ord,
   T.Text,
@@ -34,12 +33,16 @@ module AoC (
   L.singleton,
   Lex.decimal,
   Lex.signed,
+  Split.chunksOf,
+  Split.splitOn,
   lexeme,
   minimumBy,
   maximumBy,
   sc,
   parseInteger,
   parseSignedInteger,
+  Grid,
+  getGrid,
 ) where
 
 import Debug.Trace
@@ -50,7 +53,8 @@ import Text.Megaparsec.Char.Lexer qualified as Lex
 
 import Data.List qualified as L
 import Data.Text qualified as T
-import Data.List.Split
+import Data.Vector qualified as V
+import Data.List.Split qualified as Split
 import Data.Text.IO qualified as TIO
 import Data.Void
 import Data.Function (on)
@@ -69,7 +73,27 @@ perm2 xs = [(x,y) | x <- xs, y <- xs, x /= y]
 
 type Parser = Parsec Void T.Text
 
-default (Int)
+default (T.Text, Int)
+
+data Grid a = Grid
+  { grid :: V.Vector a
+  , width :: Int
+  , height :: Int
+  }
+
+instance Show a => Show (Grid a) where
+    show (Grid grid width height) = "\n" ++ concatMap (showRow . getRow) rowIndices
+      where getRow startIndex = V.toList $ V.slice startIndex width grid  
+            showRow r = concatMap show r ++ "\n"
+            rowIndices = [0, width..width*(height-1)]
+
+getGrid :: Eq a => a -> [a] -> Grid a
+getGrid delim cs = Grid (V.fromList flat) width height
+  where rows = Split.splitOn [delim] cs
+        height = length rows
+        width | height == 0 = 0
+              | otherwise = length (head rows)
+        flat = filter (/= delim) cs
 
 parseLineSeparated :: Parser a -> Parser [a]
 parseLineSeparated p = some (p <* optional eol) 
