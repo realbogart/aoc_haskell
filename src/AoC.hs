@@ -84,8 +84,9 @@ data Grid a = Grid
 instance Show a => Show (Grid a) where
     show (Grid grid width height) = "\n" ++ concatMap (showRow . getRow) rowIndices
       where getRow startIndex = V.toList $ V.slice startIndex width grid  
-            showRow r = concatMap show r ++ "\n"
+            showRow r = L.intersperse ' ' (concatMap showNoQuotes r) ++ "\n"
             rowIndices = [0, width..width*(height-1)]
+            showNoQuotes = tail . init . show
 
 getGrid :: Eq a => a -> [a] -> Grid a
 getGrid delim cs = Grid (V.fromList flat) width height
