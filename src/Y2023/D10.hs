@@ -11,5 +11,5 @@ parseInput :: Parser (Grid Char)
 parseInput = getGrid '\n' <$> some latin1Char
 
 partOne :: Grid Char -> Int
-partOne _ = 54
+partOne g = trace (show (getGridValue g (1, 1))) 54
 

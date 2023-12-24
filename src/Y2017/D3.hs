@@ -32,7 +32,7 @@ getSpiralCoords (sx, sy) n = (sx, sy) : (sx + 1, sy) : up ++ left ++ down ++ rig
 getIndex (x, y) = py * 100 + px
   where (px, py) = (x + 50, y + 50) 
 
-getGridValue grid p = grid V.! getIndex p
+getGridValueTmp grid p = grid V.! getIndex p
 setGridValue grid p v = V.update grid (V.fromList [(getIndex p, v)]) 
 
 getNeighbours (x, y) = [(x + 1, y), (x + 1, y + 1), 
@@ -42,7 +42,7 @@ getNeighbours (x, y) = [(x + 1, y), (x + 1, y + 1),
 
 walkSpiral grid (p:ps) v | nextValue > v = nextValue
                          | otherwise = walkSpiral (setGridValue grid p nextValue) ps v
-  where nextValue = sum $ map (getGridValue grid) (getNeighbours p)
+  where nextValue = sum $ map (getGridValueTmp grid) (getNeighbours p)
 walkSpiral  _ _ _ = error "Something went wrong"
 
 partTwo :: Int -> Int

@@ -43,6 +43,7 @@ module AoC (
   parseSignedInteger,
   Grid,
   getGrid,
+  getGridValue,
 ) where
 
 import Debug.Trace
@@ -95,6 +96,9 @@ getGrid delim cs = Grid (V.fromList flat) width height
         width | height == 0 = 0
               | otherwise = length (head rows)
         flat = filter (/= delim) cs
+
+getGridValue :: Grid a -> (Int, Int) -> a
+getGridValue grid (x, y) = grid.grid V.! (y * grid.width + x)
 
 parseLineSeparated :: Parser a -> Parser [a]
 parseLineSeparated p = some (p <* optional eol) 
