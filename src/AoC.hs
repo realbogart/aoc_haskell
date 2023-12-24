@@ -76,11 +76,23 @@ type Parser = Parsec Void T.Text
 
 default (T.Text, Int)
 
+type GridCoord = (Int, Int)
+
 data Grid a = Grid
   { grid :: V.Vector a
   , width :: Int
   , height :: Int
   }
+
+-- data GridNeighbours = GridNeighbours
+--   { topLeft :: GridCoord
+--   , top :: GridCoord
+--   , topRight :: GridCoord
+--   , right :: GridCoord
+--   , bottomRight :: GridCoord
+--   , bottom :: GridCoord
+--   , bottomLeft :: GridCoord
+--   }
 
 instance Show a => Show (Grid a) where
     show (Grid grid width height) = "\n" ++ concatMap (showRow . getRow) rowIndices
@@ -97,8 +109,16 @@ getGrid delim cs = Grid (V.fromList flat) width height
               | otherwise = length (head rows)
         flat = filter (/= delim) cs
 
-getGridValue :: Grid a -> (Int, Int) -> a
+getGridValue :: Grid a -> GridCoord -> a
 getGridValue grid (x, y) = grid.grid V.! (y * grid.width + x)
+
+isInsideGrid :: Grid a -> GridCoord -> Bool
+isInsideGrid grid (x, y) = x >= 0 && y >= 0 && x < grid.width && y < grid.height
+
+getGridNeighbours :: Grid a -> GridCoord -> [GridCoord]
+getGridNeighbours grid (x, y) = filter (isInsideGrid grid) ns
+  where ns = [(x + 1, y + 1), (x + 1, y), (x + 1, y - 1), (x, y - 1), 
+              (x, y + 1), (x - 1, y + 1), (x - 1, y), (x - 1, y + 1)]
 
 parseLineSeparated :: Parser a -> Parser [a]
 parseLineSeparated p = some (p <* optional eol) 
