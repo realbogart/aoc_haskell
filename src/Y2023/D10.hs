@@ -93,7 +93,7 @@ partOne g = length mainLoop `div` 2
   where mainLoop = findMainLoop g
 
 partTwo :: Grid Char -> Int
-partTwo g = (trace (show containedOnLines)) $ sum containedOnLines
+partTwo g = sum containedOnLines
   where cleanGrid = newGrid '.' g.width g.height
         mainLoop = findMainLoop g
         gridWithPath = setGridValues cleanGrid (zip mainLoop (map (getGridValueReplaceStart g) mainLoop))
