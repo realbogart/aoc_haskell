@@ -47,7 +47,8 @@ module AoC (
   newGrid,
   getGridValue,
   setGridValues,
-  getGridLines
+  getGridLines,
+  findGridCoords,
 ) where
 
 import Debug.Trace
@@ -119,6 +120,13 @@ getGridLines :: Grid a -> [[a]]
 getGridLines g = map (V.toList . (\(i, n) -> V.slice i n g.grid)) rowSlices
   where rowIndices = [0, g.width..g.width*(g.height-1)]
         rowSlices = zip rowIndices (repeat g.width)
+
+findGridCoords :: Grid a -> (a -> Bool) -> [GridCoord]
+findGridCoords g f = filter match indices
+  where horizontalIndices = [0..(g.width - 1)]
+        verticalIndices = [0..(g.height - 1)]
+        indices = [(x, y) | x <- horizontalIndices, y <- verticalIndices]
+        match = f . getGridValue g
 
 setGridValues :: Grid a -> [(GridCoord, a)] -> Grid a
 setGridValues g kvs = Grid values g.width g.height

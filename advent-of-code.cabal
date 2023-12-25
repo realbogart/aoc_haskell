@@ -49,6 +49,7 @@ library
                       Y2023.D8
                       Y2023.D9
                       Y2023.D10
+                      Y2023.D11
     -- other-modules:    Y2020
     build-depends:    base ^>=4.18.1.0,
                       megaparsec ==9.5.0,
