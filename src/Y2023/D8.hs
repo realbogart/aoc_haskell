@@ -6,7 +6,7 @@ module Y2023.D8 where
 import AoC
 import Data.HashMap.Strict qualified as HMS
 
-default (Int, Text)
+default (Integer, Text)
 
 partOneTests = [("RL\n\nAAA = (BBB, CCC)\nBBB = (DDD, EEE)\nCCC = (ZZZ, GGG)\nDDD = (DDD, DDD)\nEEE = (EEE, EEE)\nGGG = (GGG, GGG)\nZZZ = (ZZZ, ZZZ)", 2), ("LLR\n\nAAA = (BBB, BBB)\nBBB = (AAA, ZZZ)\nZZZ = (ZZZ, ZZZ)", 6)]
 
@@ -54,34 +54,26 @@ step :: NodeConnections -> Char -> NodeID -> NodeID
 step ncs dir nid = if dir == 'L' then l else r
   where (l, r) = ncs HMS.! nid
 
-countSteps :: NodeConnections -> Instructions -> NodeID -> NodeID -> Int -> Int
-countSteps ncs is from to acc | next_node == to = acc + 1
-                              | otherwise = countSteps ncs (tail is) next_node to (acc + 1)
+countSteps :: NodeConnections -> Instructions -> (NodeID -> Bool) -> Integer -> NodeID -> Integer
+countSteps ncs is endf acc from | endf next_node = acc + 1
+                                | otherwise = countSteps ncs (tail is) endf (acc + 1) next_node 
   where next_instruction = head is
         next_node = step ncs next_instruction from 
 
-countSteps2 :: NodeConnections -> Instructions -> [NodeID] -> Int -> Int
-countSteps2 ncs is from acc | done = next_acc
-                            | otherwise = trace (show is_done) $ countSteps2 ncs future_instructions next_nodes next_acc
-  where next_instruction = head is
-        future_instructions = tail is
-        next_nodes = map (step ncs next_instruction) from
-        next_acc = acc + 1
-        -- num_done = length $ filter endNode next_nodes
-        is_done = map endNode next_nodes
-        done = all endNode next_nodes
-        endNode [_,_,'Z'] = True
-        endNode _ = False
+startNode [_,_,'A'] = True
+startNode _ = False
 
-partOne :: NodeNetwork -> Int
-partOne nn = countSteps ncs instructions "AAA" "ZZZ" 0
+endNode [_,_,'Z'] = True
+endNode _ = False
+
+partOne :: NodeNetwork -> Integer
+partOne nn = countSteps ncs instructions (== "ZZZ") 0 "AAA"
   where ncs = getNodeConnections nn
         instructions = cycle nn.instructions
 
-partTwo :: NodeNetwork -> Int
-partTwo nn = countSteps2 ncs instructions start_nodes 0
+partTwo :: NodeNetwork -> Integer
+partTwo nn = trace (show all_steps) $ product all_steps
   where ncs = getNodeConnections nn
         instructions = cycle nn.instructions
-        start_nodes = (filter start_node . map source) nn.nodes
-        start_node [_,_,'A'] = True
-        start_node _ = False
+        start_nodes = (filter startNode . map source) nn.nodes
+        all_steps = map (countSteps ncs instructions endNode 0) start_nodes
