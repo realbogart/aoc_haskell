@@ -7,8 +7,10 @@ default (Int, Text)
 partOneTests =  [ (".....\n.S-7.\n.|.|.\n.L-J.\n.....", 4)
                 , ("..F7.\n.FJ|.\nSJ.L7\n|F--J\nLJ...", 8)]
 
+partTwoTests = [ ("...........\n.S-------7.\n.|F-----7|.\n.||.....||.\n.||.....||.\n.|L-7.F-J|.\n.|..|.|..|.\n.L--J.L--J.\n...........", 4), (".F----7F7F7F7F-7....\n.|F--7||||||||FJ....\n.||.FJ||||||||L7....\nFJL7L7LJLJ||LJ.L-7..\nL--J.L7...LJS7F-7L7.\n....F-J..F7FJ|L7L7L7\n....L7.F7||L7|.L7L7|\n.....|FJLJ|FJ|F7|.LJ\n....FJL-7.||.||||...\n....L---J.LJ.LJLJ...", 10)]
+
 parseInput :: Parser (Grid Char)
-parseInput = getGrid '\n' <$> some latin1Char
+parseInput = newGridFromList '\n' <$> some latin1Char
 
 findStart :: Grid Char -> GridCoord
 findStart g = snd $ head $ filter (\(v, _) -> v == 'S') (zip (map (getGridValue g) indices) indices)
@@ -47,10 +49,15 @@ stepGrid g (lx, ly) (cx, cy) acc = -- trace (show c) $
                   | leftTile  == '-' || leftTile  == 'F' = (cx - 1, cy)
                   | aboveTile == '|' || aboveTile == 'F' = (cx, cy - 1)
                   | otherwise = error "No valid start move"
-        
-partOne :: Grid Char -> Int
-partOne g = pathLength `div` 2
-  where start = findStart g
-        path = stepGrid g start start [] 
-        pathLength = length path
 
+findMainLoop :: Grid Char -> [GridCoord]
+findMainLoop g = mainLoop
+  where start = findStart g
+        mainLoop = stepGrid g start start []
+
+partOne :: Grid Char -> Int
+partOne g = length mainLoop `div` 2
+  where mainLoop = findMainLoop g
+
+partTwo :: Grid Char -> Int
+partTwo _ = 54

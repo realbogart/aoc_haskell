@@ -43,7 +43,7 @@ module AoC (
   parseSignedInteger,
   Grid (..),
   GridCoord,
-  getGrid,
+  newGridFromList,
   getGridValue,
 ) where
 
@@ -85,16 +85,6 @@ data Grid a = Grid
   , height :: Int
   }
 
--- data GridNeighbours = GridNeighbours
---   { topLeft :: GridCoord
---   , top :: GridCoord
---   , topRight :: GridCoord
---   , right :: GridCoord
---   , bottomRight :: GridCoord
---   , bottom :: GridCoord
---   , bottomLeft :: GridCoord
---   }
-
 instance Show a => Show (Grid a) where
     show (Grid grid width height) = "\n" ++ concatMap (showRow . getRow) rowIndices
       where getRow startIndex = V.toList $ V.slice startIndex width grid  
@@ -102,8 +92,8 @@ instance Show a => Show (Grid a) where
             rowIndices = [0, width..width*(height-1)]
             showNoQuotes = tail . init . show
 
-getGrid :: Eq a => a -> [a] -> Grid a
-getGrid delim cs = Grid (V.fromList flat) width height
+newGridFromList :: Eq a => a -> [a] -> Grid a
+newGridFromList delim cs = Grid (V.fromList flat) width height
   where rows = Split.splitOn [delim] cs
         height  | null lastRow = length rows - 1
                 | otherwise = length rows
@@ -112,8 +102,20 @@ getGrid delim cs = Grid (V.fromList flat) width height
               | otherwise = length (head rows)
         flat = filter (/= delim) cs
 
+newGrid :: a -> Int -> Int -> Grid a
+newGrid v w h = Grid (V.fromList initValues) w h
+  where initValues = replicate (w * h) v
+
+getGridIndex :: Grid a -> GridCoord -> Int
+getGridIndex g (x, y) = g.width * y + x
+
 getGridValue :: Grid a -> GridCoord -> a
-getGridValue grid (x, y) = grid.grid V.! (y * grid.width + x)
+getGridValue g (x, y) = g.grid V.! (y * g.width + x)
+
+setGridValues :: Grid a -> [(GridCoord, a)] -> Grid a
+setGridValues g kvs = Grid values g.width g.height
+  where indices = map (\(c, v) -> (getGridIndex g c, v)) kvs
+        values = V.update g.grid (V.fromList indices)
 
 isInsideGrid :: Grid a -> GridCoord -> Bool
 isInsideGrid grid (x, y) = x >= 0 && y >= 0 && x < grid.width && y < grid.height
