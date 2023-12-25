@@ -7,7 +7,7 @@ default (Int, Text)
 partOneTests = [("???.### 1,1,3\n.??..??...?##. 1,1,3\n?#?#?#?#?#?#?#? 1,3,1,6\n????.#...#... 4,1,1\n????.######..#####. 1,6,5\n?###???????? 3,2,1", 21)]
 
 data SpringCondition = Unknown | Operational | Damaged
-  deriving (Show)
+  deriving (Show, Eq)
 
 data SpringRecord = SpringRecord
   { conditions :: [SpringCondition]
@@ -21,4 +21,11 @@ parseInput = parseLineSeparated parseSpringRecord
           dg <- some (decimal <* optional  (char ','))
           return $ SpringRecord cs dg
 
-partOne _ = 54
+isValidArrangement :: [SpringCondition] -> [Int] -> Bool
+isValidArrangement cs dg = groups == dg
+  where groups = map length $ filter ((== Damaged) . head) $ group cs
+
+getPossibleArrangements :: SpringRecord -> Int
+getPossibleArrangements r = 5
+
+partOne = sum . map getPossibleArrangements
