@@ -17,22 +17,23 @@ findStart g = snd $ head $ filter (\(v, _) -> v == 'S') (zip (map (getGridValue 
         indices = [(x, y) | x <- horizontalIndices, y <- verticalIndices]
 
 stepGrid :: Grid Char -> GridCoord -> GridCoord -> [GridCoord] -> [GridCoord]
-stepGrid g (lx, ly) (cx, cy) acc =  case currentTile of
-                                      '|' | cy > ly   ->  stepGrid g c (cx, cy + 1) nextAcc
-                                          | otherwise ->  stepGrid g c (cx, cy - 1) nextAcc
-                                      '-' | cx > lx   ->  stepGrid g c (cx + 1, cy) nextAcc
-                                          | otherwise ->  stepGrid g c (cx - 1, cy) nextAcc
-                                      'J' | cx > lx   ->  stepGrid g c (cx, cy - 1) nextAcc 
-                                          | otherwise ->  stepGrid g c (cx - 1, cy) nextAcc
-                                      '7' | cx > lx   ->  stepGrid g c (cx, cy + 1) nextAcc 
-                                          | otherwise ->  stepGrid g c (cx - 1, cy) nextAcc
-                                      'F' | cy < ly   ->  stepGrid g c (cx + 1, cy) nextAcc
-                                          | otherwise ->  stepGrid g c (cx, cy + 1) nextAcc
-                                      'L' | cy > ly   ->  stepGrid g c (cx + 1, cy) nextAcc 
-                                          | otherwise ->  stepGrid g c (cx, cy - 1) nextAcc
-                                      'S' | c == l    ->  stepGrid g c firstMove nextAcc
-                                          | otherwise ->  acc
-                                      _ -> error "Invalid tile"
+stepGrid g (lx, ly) (cx, cy) acc = -- trace (show c) $ 
+  case currentTile of
+    '|' | cy > ly   ->  stepGrid g c (cx, cy + 1) nextAcc
+        | otherwise ->  stepGrid g c (cx, cy - 1) nextAcc
+    '-' | cx > lx   ->  stepGrid g c (cx + 1, cy) nextAcc
+        | otherwise ->  stepGrid g c (cx - 1, cy) nextAcc
+    'J' | cx > lx   ->  stepGrid g c (cx, cy - 1) nextAcc 
+        | otherwise ->  stepGrid g c (cx - 1, cy) nextAcc
+    '7' | cx > lx   ->  stepGrid g c (cx, cy + 1) nextAcc 
+        | otherwise ->  stepGrid g c (cx - 1, cy) nextAcc
+    'F' | cy < ly   ->  stepGrid g c (cx + 1, cy) nextAcc
+        | otherwise ->  stepGrid g c (cx, cy + 1) nextAcc
+    'L' | cy > ly   ->  stepGrid g c (cx + 1, cy) nextAcc 
+        | otherwise ->  stepGrid g c (cx, cy - 1) nextAcc
+    'S' | c == l    ->  stepGrid g c firstMove nextAcc
+        | otherwise ->  acc
+    _ -> error "Invalid tile"
   where c = (cx, cy) 
         l = (lx, ly)
         nextAcc = c : acc

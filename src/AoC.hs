@@ -105,7 +105,9 @@ instance Show a => Show (Grid a) where
 getGrid :: Eq a => a -> [a] -> Grid a
 getGrid delim cs = Grid (V.fromList flat) width height
   where rows = Split.splitOn [delim] cs
-        height = length rows
+        height  | null lastRow = length rows - 1
+                | otherwise = length rows
+        lastRow = last rows
         width | height == 0 = 0
               | otherwise = length (head rows)
         flat = filter (/= delim) cs
