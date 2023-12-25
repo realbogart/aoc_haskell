@@ -41,7 +41,8 @@ module AoC (
   sc,
   parseInteger,
   parseSignedInteger,
-  Grid,
+  Grid (..),
+  GridCoord,
   getGrid,
   getGridValue,
 ) where
