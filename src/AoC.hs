@@ -44,7 +44,10 @@ module AoC (
   Grid (..),
   GridCoord,
   newGridFromList,
+  newGrid,
   getGridValue,
+  setGridValues,
+  getGridLines
 ) where
 
 import Debug.Trace
@@ -111,6 +114,11 @@ getGridIndex g (x, y) = g.width * y + x
 
 getGridValue :: Grid a -> GridCoord -> a
 getGridValue g (x, y) = g.grid V.! (y * g.width + x)
+
+getGridLines :: Grid a -> [[a]]
+getGridLines g = map (V.toList . (\(i, n) -> V.slice i n g.grid)) rowSlices
+  where rowIndices = [0, g.width..g.width*(g.height-1)]
+        rowSlices = zip rowIndices (repeat g.width)
 
 setGridValues :: Grid a -> [(GridCoord, a)] -> Grid a
 setGridValues g kvs = Grid values g.width g.height
