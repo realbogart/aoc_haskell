@@ -28,6 +28,7 @@ module AoC (
   L.groupBy,
   L.tails,
   L.find,
+  L.findIndex,
   L.delete,
   L.isPrefixOf,
   L.singleton,
