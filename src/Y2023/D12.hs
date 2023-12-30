@@ -31,23 +31,22 @@ validGroup size (c:rest)  | c == Unknown || c == Damaged = validGroup (size - 1)
 
 countSlots :: [Int] -> V.Vector SpringCondition -> Int
 countSlots [] _ = 0
-countSlots (size:dgs_rest) scs  | null dgs_rest = if is_first_damaged then 1 else length valid_groups
-                                | is_first_damaged && 
-                                  validGroup size (V.toList first_damaged_group) = countSlots dgs_rest rest
-                                | otherwise = trace (show valid_groups) $ sum $ map (countSlots dgs_rest . snd) valid_groups
+countSlots (size:dgs_rest) scs  | null dgs_rest = length valid_groups
+                                | otherwise = sum $ map (countSlots dgs_rest . snd) valid_groups
   where first_damaged = V.findIndex (== Damaged) scs
-        (first_damaged_group, rest) = V.splitAt (min (size + 1) (V.length scs)) scs
-        is_first_damaged = case first_damaged of
-                            Nothing -> False
-                            Just fd -> fd == 0
         test_slots = case first_damaged of
                       Nothing -> scs
-                      Just i -> V.slice 0 i scs
-        test_positions = [0..(V.length test_slots - size - 1)]
+                      Just i -> V.slice 0 (min (i + size + 1) (length scs)) scs
+        test_positions = [0..(V.length test_slots - size)]
         test_start = map (snd . (`V.splitAt` scs)) test_positions
         test_groups = map (V.splitAt (size + 1)) test_start
         valid_groups = filter (validGroup size . V.toList . fst) test_groups
 
+-- partOne :: [SpringRecord] -> Int
+-- partOne srs = countSlots test.damageGroups test.conditions
+--   where test = last srs
+
 partOne :: [SpringRecord] -> Int
-partOne srs = countSlots (head test).damageGroups (head test).conditions 
-  where test = tail srs
+partOne srs = sum counted_slots
+  where splitRecord r = (r.damageGroups, r.conditions)
+        counted_slots = map (uncurry countSlots . splitRecord) srs
