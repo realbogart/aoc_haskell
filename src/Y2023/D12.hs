@@ -37,16 +37,18 @@ countSlots (size:dgs_rest) scs  | null dgs_rest = length valid_groups
         test_slots = case first_damaged of
                       Nothing -> scs
                       Just i -> V.slice 0 (min (i + size + 1) (length scs)) scs
-        test_positions = [0..(V.length test_slots - size)]
+        -- test_positions  | size == length scs = [0..(V.length test_slots - size)]
+        --                 | otherwise = [0..(V.length test_slots - size - 1)]
+        test_positions = [0..(V.length test_slots - size - 1)]
         test_start = map (snd . (`V.splitAt` scs)) test_positions
         test_groups = map (V.splitAt (size + 1)) test_start
         valid_groups = filter (validGroup size . V.toList . fst) test_groups
 
 -- partOne :: [SpringRecord] -> Int
--- partOne srs = countSlots test.damageGroups test.conditions
+-- partOne srs = countSlots test.damageGroups (test.conditions V.++ (V.fromList [Operational]))
 --   where test = last srs
 
 partOne :: [SpringRecord] -> Int
-partOne srs = sum counted_slots
-  where splitRecord r = (r.damageGroups, r.conditions)
+partOne srs = trace (show counted_slots) $ sum counted_slots
+  where splitRecord r = (r.damageGroups, (r.conditions V.++ (V.fromList [Operational])))
         counted_slots = map (uncurry countSlots . splitRecord) srs
