@@ -62,7 +62,8 @@ library
                       cryptonite ==0.30,
                       bytestring ==0.11.5.2,
                       groupBy ==0.1.0.0,
-                      unordered-containers ==0.2.19.1
+                      unordered-containers ==0.2.19.1,
+                      parallel ==3.2.2.0,
     hs-source-dirs:   src
     default-language: GHC2021
     default-extensions: OverloadedStrings,
@@ -81,7 +82,7 @@ library
 executable benchit
     build-depends:  base ^>=4.18.1.0,
                     advent-of-code
-    ghc-options:    -O2
+    ghc-options:    -O2 -threaded -rtsopts -with-rtsopts=-N
     main-is:        Main.hs
     hs-source-dirs: benchit
 

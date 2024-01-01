@@ -10,6 +10,7 @@ module AoC (
   module Data.Char,
   module Debug.Trace,
   module Data.Ord,
+  module Control.Parallel.Strategies,
   T.Text,
   parseLineSeparated,
   parseGroupsLineSeparated,
@@ -32,6 +33,7 @@ module AoC (
   L.delete,
   L.isPrefixOf,
   L.singleton,
+  L.intersperse,
   Lex.decimal,
   Lex.signed,
   Split.chunksOf,
@@ -63,6 +65,7 @@ import Data.Text qualified as T
 import Data.Vector qualified as V
 import Data.List.Split qualified as Split
 import Data.Text.IO qualified as TIO
+import Control.Parallel.Strategies
 import Data.Void
 import Data.Function (on)
 import Data.Maybe (isJust, fromJust, catMaybes, mapMaybe)
