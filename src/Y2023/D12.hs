@@ -28,25 +28,27 @@ parseInput = parseLineSeparated parseSpringRecord
 validGroup :: Int -> Int -> V.Vector SpringCondition -> Bool
 validGroup size l scs | l == 0 = size == 0
                       | l == 1 && size == 0 = c == Unknown || c == Operational
-                      | c == Unknown || c == Damaged = validGroup (size - 1) (l - 1) (snd $ V.splitAt 1 scs)
-                      | otherwise = False
+                      | c == Operational = False
+                      | otherwise = validGroup (size - 1) (l - 1) (snd $ V.splitAt 1 scs)
   where c = scs V.! 0
 
 countSlots :: [Int] -> V.Vector SpringCondition -> Int
 countSlots [] _ = 0
-countSlots (size:dgs_rest) scs  | null dgs_rest = length valid_groups
+countSlots (size:dgs_rest) scs  | remaining_space_needed > remaining_space = 0
+                                | null dgs_rest = length valid_groups
                                 -- | otherwise = trace (show size ++ show valid_groups) $ sum $ map (countSlots dgs_rest . snd) valid_groups
                                 | otherwise = sum $ map (countSlots dgs_rest . snd) valid_groups
   where first_damaged = V.findIndex (== Damaged) scs
-        remainder_space = length dgs_rest + sum dgs_rest
+        remaining_space = V.length scs
+        remaining_space_needed = length dgs_rest + sum dgs_rest
         test_slots = case first_damaged of
                       Nothing -> scs
-                      Just i -> V.slice 0 (min (i + size + 1) (length scs - remainder_space)) scs
+                      Just i -> V.slice 0 (min (i + size + 1) (remaining_space - remaining_space_needed)) scs
         test_positions = [0..(V.length test_slots - size - 1)]
         test_start = map (snd . (`V.splitAt` scs)) test_positions
         test_groups = map (V.splitAt (size + 1)) test_start
-        test_groups_and_lengths = map (\(tg,_) -> (length tg, tg)) test_groups
-        valid_groups = filter (uncurry (validGroup size)) test_groups_and_lengths
+        test_groups_and_lengths = map (\(tg,rest) -> (V.length tg, (tg, rest))) test_groups
+        valid_groups = map snd $ filter (uncurry (validGroup size) . (\(tgl, (tg, _)) -> (tgl, tg))) test_groups_and_lengths
 
 countRecord :: SpringRecord -> Int
 -- countRecord sr = trace ("SpringConditions: " ++ show sr.conditions ++ " Slots: " ++ show numSlots) numSlots
@@ -60,7 +62,8 @@ unfoldRecord r = SpringRecord unfolded_conditions unfolded_damage_groups
         unfolded_damage_groups = concat $ replicate 5 r.damageGroups
 
 partOne :: [SpringRecord] -> Int
-partOne = sum . map countRecord
+partOne srs = trace (show record_counts) $ sum record_counts
+  where record_counts = map countRecord srs
 
 partTwo:: [SpringRecord] -> Int
 partTwo = sum . parMap rpar (countRecord . unfoldRecord)
