@@ -36,17 +36,16 @@ markBoards :: Int -> [Grid Int] -> [Grid Int]
 markBoards target = map (markBoard target)
 
 hasWon :: Grid Int -> Bool
-hasWon board = any (== True) $ map isLaneFilled lanes
-  where isLaneFilled :: [(Int, Int)] -> Bool
-        isLaneFilled l = all (== -1) $ map (getGridValue board) l 
+hasWon board = any isLaneFilled lanes
+  where isLaneFilled = all ((== -1) .  getGridValue board) 
 
 countScore :: Int -> Grid Int -> Int
-countScore n board = n * (sum $ filter (/= -1) $ V.toList board.grid)
+countScore n board = n * sum (filter (/= -1) $ V.toList board.grid)
 
 play :: Bingo -> Int
 play (Bingo [] _) = error "No winner"
 play (Bingo (n:ns) boards) 
-  | length winner_boards > 0 = head winner_scores
+  | not (null winner_boards) = head winner_scores
   | otherwise = play (Bingo ns next_boards)
     where next_boards = markBoards n boards
           winner_boards = filter hasWon next_boards

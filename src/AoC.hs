@@ -52,6 +52,8 @@ module AoC (
   setGridValues,
   getGridLines,
   findGridCoords,
+  Bi.first,
+  Bi.second,
 ) where
 
 import Debug.Trace
@@ -72,6 +74,7 @@ import Data.Maybe (isJust, fromJust, catMaybes, mapMaybe)
 import Data.Char (digitToInt, ord, chr, isUpper, isDigit)
 import Data.Foldable (minimumBy, maximumBy)
 import Data.Ord (comparing, Down(..))
+import Data.Bifunctor qualified as Bi
 
 import Control.Monad (void)
 import Control.Applicative ((<|>))
@@ -135,7 +138,7 @@ findGridCoords g f = filter match indices
 
 setGridValues :: Grid a -> [(GridCoord, a)] -> Grid a
 setGridValues g kvs = Grid values g.width g.height
-  where indices = map (\(c, v) -> (getGridIndex g c, v)) kvs
+  where indices = map (Bi.first (getGridIndex g)) kvs
         values = V.update g.grid (V.fromList indices)
 
 isInsideGrid :: Grid a -> GridCoord -> Bool
