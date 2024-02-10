@@ -71,7 +71,8 @@ library
                         DuplicateRecordFields,
                         NoFieldSelectors,
                         StrictData,
-                        OverloadedRecordDot
+                        OverloadedRecordDot,
+                        ViewPatterns
     ghc-options:      -Weverything -Wno-missing-signatures -Wno-missing-exported-signatures
                       -Wno-implicit-prelude -Wno-missing-export-lists -Wno-missing-import-lists
                       -Wno-monomorphism-restriction -Wno-type-defaults -Wno-missing-safe-haskell-mode

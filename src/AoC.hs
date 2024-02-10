@@ -35,6 +35,7 @@ module AoC (
   L.singleton,
   L.intersperse,
   L.partition,
+  L.stripPrefix,
   Lex.decimal,
   Lex.signed,
   Split.chunksOf,
