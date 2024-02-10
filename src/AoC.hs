@@ -32,6 +32,7 @@ module AoC (
   L.findIndex,
   L.delete,
   L.isPrefixOf,
+  L.isInfixOf,
   L.singleton,
   L.intersperse,
   L.partition,
