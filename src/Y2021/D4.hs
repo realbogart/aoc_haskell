@@ -8,7 +8,8 @@ default (Int, Text)
 data Bingo = Bingo
   { numbers :: [Int]
   , boards :: [Grid Int]
-  } deriving (Show)
+  }
+  deriving (Show)
 
 parseBoard :: Parser (Grid Int)
 parseBoard = do
@@ -16,7 +17,7 @@ parseBoard = do
   return $ Grid (V.fromList numbers) 5 5
 
 parseInput :: Parser Bingo
-parseInput = do 
+parseInput = do
   ns <- some (parseInteger <* optional (char ','))
   _ <- string "\n\n"
   boards <- some (parseBoard <* hspace)
@@ -26,8 +27,9 @@ partOneTests = [("7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,1
 
 lanes :: [[(Int, Int)]]
 lanes = rows ++ columns
-  where rows = [[(x, y) | x <- [0..4]] | y <- [0..4]]
-        columns = [[(x, y) | y <- [0..4]] | x <- [0..4]]
+ where
+  rows = [[(x, y) | x <- [0 .. 4]] | y <- [0 .. 4]]
+  columns = [[(x, y) | y <- [0 .. 4]] | x <- [0 .. 4]]
 
 markBoard :: Int -> Grid Int -> Grid Int
 markBoard target board = Grid (V.fromList $ map (\x -> if x == target then -1 else x) $ V.toList board.grid) 5 5
@@ -37,19 +39,21 @@ markBoards target = map (markBoard target)
 
 hasWon :: Grid Int -> Bool
 hasWon board = any isLaneFilled lanes
-  where isLaneFilled = all ((== -1) .  getGridValue board) 
+ where
+  isLaneFilled = all ((== -1) . getGridValue board)
 
 countScore :: Int -> Grid Int -> Int
 countScore n board = n * sum (filter (/= -1) $ V.toList board.grid)
 
 play :: Bingo -> Int
 play (Bingo [] _) = error "No winner"
-play (Bingo (n:ns) boards) 
+play (Bingo (n : ns) boards)
   | not (null winner_boards) = head winner_scores
   | otherwise = play (Bingo ns next_boards)
-    where next_boards = markBoards n boards
-          winner_boards = filter hasWon next_boards
-          winner_scores = map (countScore n) winner_boards
+ where
+  next_boards = markBoards n boards
+  winner_boards = filter hasWon next_boards
+  winner_scores = map (countScore n) winner_boards
 
 partOne :: Bingo -> Int
 partOne = play
