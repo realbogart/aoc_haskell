@@ -8,20 +8,23 @@ data Move = Rock | Paper | Scissors
   deriving (Show)
 
 data Round = Round
-  { opponent :: Move
-  , you :: Move
-  } deriving (Show)
+  { opponent :: Move,
+    you :: Move
+  }
+  deriving (Show)
 
-parseInput = parseLineSeparated parseRound 
-  where parseRound = do
-          o <- choice [Rock <$ char 'A', Paper <$ char 'B', Scissors <$ char 'C']
-          _ <- hspace1
-          y <- choice [Rock <$ char 'X', Paper <$ char 'Y', Scissors <$ char 'Z']
-          return $ Round o y
+parseInput = parseLineSeparated parseRound
+  where
+    parseRound = do
+      o <- choice [Rock <$ char 'A', Paper <$ char 'B', Scissors <$ char 'C']
+      _ <- hspace1
+      y <- choice [Rock <$ char 'X', Paper <$ char 'Y', Scissors <$ char 'Z']
+      return $ Round o y
 
 input = "A Y\nB X\nC Z"
 
 partOneTests = [(input, 15)]
+
 partTwoTests = [(input, 12)]
 
 scoreMove Rock = 1
@@ -53,4 +56,3 @@ partOne = sum . map (uncurry scoreRound . (\r -> (r.opponent, r.you)))
 
 partTwo :: [Round] -> Int
 partTwo = sum . map (uncurry scoreRound . (\r -> (r.opponent, translateMove r.opponent r.you)))
-

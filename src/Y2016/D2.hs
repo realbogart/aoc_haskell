@@ -8,13 +8,22 @@ data Direction = NumLeft | NumRight | NumUp | NumDown
   deriving (Show)
 
 parseInput = parseLineSeparated segment
-  where segment = some (NumLeft <$ char 'L' <|>
-                        NumRight <$ char 'R' <|>
-                        NumUp <$ char 'U' <|>
-                        NumDown <$ char 'D')
+  where
+    segment =
+      some
+        ( NumLeft
+            <$ char 'L'
+              <|> NumRight
+            <$ char 'R'
+              <|> NumUp
+            <$ char 'U'
+              <|> NumDown
+            <$ char 'D'
+        )
 
-partOneTests = [("ULL\nRRDDD\nLURDL\nUUUUD",[1,9,8,5])]
-partTwoTests = [("ULL\nRRDDD\nLURDL\nUUUUD",['5','D','B','3'])]
+partOneTests = [("ULL\nRRDDD\nLURDL\nUUUUD", [1, 9, 8, 5])]
+
+partTwoTests = [("ULL\nRRDDD\nLURDL\nUUUUD", ['5', 'D', 'B', '3'])]
 
 selectDir :: (a, a, a, a) -> Direction -> a
 selectDir (l, _, _, _) NumLeft = l
@@ -59,9 +68,10 @@ getNext2 'D' = selectDir ('D', 'D', 'B', 'D')
 getNext2 _ = error "Invalid number"
 
 getCode :: (a -> Direction -> a) -> a -> [[Direction]] -> [a]
-getCode nextFn n = tail . scanl getNumber n 
-  where getNumber = foldl' nextFn
+getCode nextFn n = tail . scanl getNumber n
+  where
+    getNumber = foldl' nextFn
 
 partOne = getCode getNext 5
-partTwo = getCode getNext2 '5'
 
+partTwo = getCode getNext2 '5'

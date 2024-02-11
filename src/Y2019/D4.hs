@@ -12,6 +12,7 @@ parseInput = do
   return (from, to)
 
 partOneTests = []
+
 partTwoTests = []
 
 digitsIncrease :: Int -> Bool
@@ -24,7 +25,9 @@ onlyTwoAdjacentMatch :: Int -> Bool
 onlyTwoAdjacentMatch = any ((== 2) . length) . group . map digitToInt . show
 
 partOne (from, to) = length $ filter twoAdjacentMatch $ filter digitsIncrease range
-  where range = [from..to]
+  where
+    range = [from .. to]
 
 partTwo (from, to) = length $ filter onlyTwoAdjacentMatch $ filter digitsIncrease range
-  where range = [from..to]
+  where
+    range = [from .. to]

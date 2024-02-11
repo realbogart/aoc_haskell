@@ -1,0 +1,14 @@
+#!/bin/bash
+
+REPO_ROOT=$(git rev-parse --show-toplevel)
+cd "$REPO_ROOT"
+
+echo "Running ormolu on all Haskell files..."
+ormolu --mode inplace $(find . -name '*.hs')
+
+git add $(git ls-files --modified | grep '\.hs$')
+
+echo "All Haskell files have been formatted with ormolu."
+
+exit 0
+

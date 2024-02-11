@@ -13,20 +13,23 @@ partOneTests = [("RL\n\nAAA = (BBB, CCC)\nBBB = (DDD, EEE)\nCCC = (ZZZ, GGG)\nDD
 partTwoTests = [("LR\n\n11A = (11B, XXX)\n11B = (XXX, 11Z)\n11Z = (11B, XXX)\n22A = (22B, XXX)\n22B = (22C, 22C)\n22C = (22Z, 22Z)\n22Z = (22B, 22B)\nXXX = (XXX, XXX)", 6)]
 
 type Instructions = [Char]
+
 type NodeID = [Char]
 
 data Node = Node
-  { source :: NodeID
-  , left :: NodeID
-  , right :: NodeID
-  } deriving (Show)
+  { source :: NodeID,
+    left :: NodeID,
+    right :: NodeID
+  }
+  deriving (Show)
 
 source node = node.source
 
 data NodeNetwork = NodeNetwork
-  { instructions :: Instructions
-  , nodes :: [Node]
-  } deriving (Show)
+  { instructions :: Instructions,
+    nodes :: [Node]
+  }
+  deriving (Show)
 
 type NodeConnections = HMS.HashMap NodeID (NodeID, NodeID)
 
@@ -34,46 +37,52 @@ parseInput :: Parser NodeNetwork
 parseInput = do
   instructions <- parseInstructions
   NodeNetwork instructions <$> parseNodes
-  where parseInstructions :: Parser Instructions
-        parseInstructions = some (char 'L' <|> char 'R') <* space
-        parseNodes = parseLineSeparated parseNode
-        parseNode :: Parser Node
-        parseNode = do
-          source_id <- parseNodeID
-          _ <- space <* char '=' <* space <* char '('
-          left_id <- parseNodeID
-          _ <- char ',' <* space
-          right_id <- parseNodeID <* char ')'
-          return $ Node source_id left_id right_id
-        parseNodeID = count 3 (letterChar <|> digitChar)
+  where
+    parseInstructions :: Parser Instructions
+    parseInstructions = some (char 'L' <|> char 'R') <* space
+    parseNodes = parseLineSeparated parseNode
+    parseNode :: Parser Node
+    parseNode = do
+      source_id <- parseNodeID
+      _ <- space <* char '=' <* space <* char '('
+      left_id <- parseNodeID
+      _ <- char ',' <* space
+      right_id <- parseNodeID <* char ')'
+      return $ Node source_id left_id right_id
+    parseNodeID = count 3 (letterChar <|> digitChar)
 
 getNodeConnections :: NodeNetwork -> NodeConnections
 getNodeConnections nn = HMS.fromList (map (\node -> (node.source, (node.left, node.right))) nn.nodes)
 
 step :: NodeConnections -> Char -> NodeID -> NodeID
 step ncs dir nid = if dir == 'L' then l else r
-  where (l, r) = ncs HMS.! nid
+  where
+    (l, r) = ncs HMS.! nid
 
 countSteps :: NodeConnections -> Instructions -> (NodeID -> Bool) -> Integer -> NodeID -> Integer
-countSteps ncs is endf acc from | endf next_node = acc + 1
-                                | otherwise = countSteps ncs (tail is) endf (acc + 1) next_node 
-  where next_instruction = head is
-        next_node = step ncs next_instruction from 
+countSteps ncs is endf acc from
+  | endf next_node = acc + 1
+  | otherwise = countSteps ncs (tail is) endf (acc + 1) next_node
+  where
+    next_instruction = head is
+    next_node = step ncs next_instruction from
 
-startNode [_,_,'A'] = True
+startNode [_, _, 'A'] = True
 startNode _ = False
 
-endNode [_,_,'Z'] = True
+endNode [_, _, 'Z'] = True
 endNode _ = False
 
 partOne :: NodeNetwork -> Integer
 partOne nn = countSteps ncs instructions (== "ZZZ") 0 "AAA"
-  where ncs = getNodeConnections nn
-        instructions = cycle nn.instructions
+  where
+    ncs = getNodeConnections nn
+    instructions = cycle nn.instructions
 
 partTwo :: NodeNetwork -> Integer
 partTwo nn = trace (show all_steps) $ product all_steps
-  where ncs = getNodeConnections nn
-        instructions = cycle nn.instructions
-        start_nodes = (filter startNode . map source) nn.nodes
-        all_steps = map (countSteps ncs instructions endNode 0) start_nodes
+  where
+    ncs = getNodeConnections nn
+    instructions = cycle nn.instructions
+    start_nodes = (filter startNode . map source) nn.nodes
+    all_steps = map (countSteps ncs instructions endNode 0) start_nodes

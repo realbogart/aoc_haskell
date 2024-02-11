@@ -4,7 +4,7 @@ import AoC
 import Y2023.D12
 
 main :: IO ()
-main = do 
+main = do
   parseTestAndSolve parseInput partTwo partTwoTests "src/Y2023/D12.txt"
   putStrLn "BENCH!"
 
