@@ -3,3 +3,5 @@ dist-newstyle/*
 *.prof
 *.aux
 *.ps
+.direnv/*
+result

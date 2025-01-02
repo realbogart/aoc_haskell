@@ -1,4 +1,4 @@
-cabal-version:      2.4
+cabal-version:      3.4
 name:               advent-of-code
 version:            0.1.0.0
 synopsis:
@@ -8,64 +8,73 @@ author:             Johan Yngman
 maintainer:         johan.yngman@gmail.com
 extra-source-files: CHANGELOG.md
 
+common warnings
+    ghc-options:      -Weverything -Wno-missing-signatures -Wno-missing-exported-signatures
+                      -Wno-implicit-prelude -Wno-missing-export-lists -Wno-missing-import-lists
+                      -Wno-monomorphism-restriction -Wno-type-defaults -Wno-missing-safe-haskell-mode
+                      -Wno-unsafe -Wno-missing-local-signatures -Wno-missing-kind-signatures
+                      -Wno-all-missed-specialisations -Wno-missed-specialisations
+                      -Wno-missing-deriving-strategies -Wno-prepositive-qualified-module
+                      -Wno-unused-top-binds
+
 library
+    import:           warnings
     exposed-modules:  AoC,
-                      Y2015.D1
-                      Y2015.D2
-                      Y2015.D3
-                      Y2015.D4
-                      Y2015.D5
-                      Y2016.D1
-                      Y2016.D2
-                      Y2016.D3
-                      Y2016.D4
-                      Y2017.D1
-                      Y2017.D2
-                      Y2017.D3
-                      Y2017.D4
-                      Y2018.D1
-                      Y2018.D2
-                      Y2018.D3
-                      Y2018.D4
-                      Y2019.D1
-                      Y2019.D2
-                      Y2019.D3
-                      Y2019.D4
-                      Y2020.D1
-                      Y2020.D2
-                      Y2020.D3
-                      Y2020.D4
-                      Y2021.D1
-                      Y2021.D2
-                      Y2021.D3
-                      Y2021.D4
-                      Y2022.D1
-                      Y2022.D2
-                      Y2023.D1
-                      Y2023.D2
-                      Y2023.D3
-                      Y2023.D4
-                      Y2023.D5
-                      Y2023.D6
-                      Y2023.D7
-                      Y2023.D8
-                      Y2023.D9
-                      Y2023.D10
-                      Y2023.D11
+                      Y2015.D1,
+                      Y2015.D2,
+                      Y2015.D3,
+                      Y2015.D4,
+                      Y2015.D5,
+                      Y2016.D1,
+                      Y2016.D2,
+                      Y2016.D3,
+                      Y2016.D4,
+                      Y2017.D1,
+                      Y2017.D2,
+                      Y2017.D3,
+                      Y2017.D4,
+                      Y2018.D1,
+                      Y2018.D2,
+                      Y2018.D3,
+                      Y2018.D4,
+                      Y2019.D1,
+                      Y2019.D2,
+                      Y2019.D3,
+                      Y2019.D4,
+                      Y2020.D1,
+                      Y2020.D2,
+                      Y2020.D3,
+                      Y2020.D4,
+                      Y2021.D1,
+                      Y2021.D2,
+                      Y2021.D3,
+                      Y2021.D4,
+                      Y2022.D1,
+                      Y2022.D2,
+                      Y2023.D1,
+                      Y2023.D2,
+                      Y2023.D3,
+                      Y2023.D4,
+                      Y2023.D5,
+                      Y2023.D6,
+                      Y2023.D7,
+                      Y2023.D8,
+                      Y2023.D9,
+                      Y2023.D10,
+                      Y2023.D11,
                       Y2023.D12
     -- other-modules:    Y2020
-    build-depends:    base ^>=4.18.1.0,
-                      megaparsec ==9.5.0,
-                      text ==2.1,
-                      pretty-simple ==4.1.2.0,
-                      containers ==0.6.7,
-                      vector ==0.13.0.0,
-                      split ==0.2.3.5,
-                      cryptonite ==0.30,
-                      bytestring ==0.11.5.2,
-                      groupBy ==0.1.0.0,
-                      unordered-containers ==0.2.19.1,
-                      parallel ==3.2.2.0,
+    build-depends:    base,
+                      megaparsec,
+                      text,
+                      pretty,
+                      containers,
+                      vector,
+                      split,
+                      cryptonite,
+                      bytestring,
+                      groupBy,
+                      parallel,
     hs-source-dirs:   src
     default-language: GHC2021
     default-extensions: OverloadedStrings,
@@ -83,16 +92,17 @@ library
                       -Wno-unused-top-binds
 
 executable benchit
-    build-depends:  base ^>=4.18.1.0,
-                    advent-of-code
+    import:         warnings
+    build-depends:  base
     ghc-options:    -O2 -threaded -rtsopts -with-rtsopts=-N
     main-is:        Main.hs
     hs-source-dirs: benchit
 
 test-suite advent-of-code-test
+    import:           warnings
     default-language: GHC2021
     type:             exitcode-stdio-1.0
     hs-source-dirs:   test
     main-is:          MyLibTest.hs
-    build-depends:    base ^>=4.18.1.0,
+    build-depends:    base
 
