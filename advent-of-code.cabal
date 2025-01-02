@@ -62,7 +62,8 @@ library
                       Y2023.D9,
                       Y2023.D10,
                       Y2023.D11,
-                      Y2023.D12
+                      Y2023.D12,
+                      Y2024.D17
     -- other-modules:    Y2020
     build-depends:    base,
                       megaparsec,
@@ -88,7 +89,8 @@ library
 
 executable benchit
     import:         warnings
-    build-depends:  base
+    build-depends:  base,
+                    advent-of-code
     ghc-options:    -O2 -threaded -rtsopts -with-rtsopts=-N
     main-is:        Main.hs
     hs-source-dirs: benchit

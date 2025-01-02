@@ -10,6 +10,7 @@ module AoC
     module Data.Char,
     module Debug.Trace,
     module Data.Ord,
+    B.xor,
     module Control.Parallel.Strategies,
     T.Text,
     parseLineSeparated,
@@ -64,12 +65,13 @@ import Control.Applicative ((<|>))
 import Control.Monad (void)
 import Control.Parallel.Strategies
 import Data.Bifunctor qualified as Bi
+import Data.Bits qualified as B
 import Data.Char (chr, digitToInt, isDigit, isUpper, ord)
 import Data.Foldable (maximumBy, minimumBy)
 import Data.Function (on)
 import Data.List qualified as L
 import Data.List.Split qualified as Split
-import Data.Maybe (catMaybes, fromJust, isJust, mapMaybe)
+import Data.Maybe (catMaybes, fromJust, isJust, isNothing, mapMaybe)
 import Data.Ord (Down (..), comparing)
 import Data.Text qualified as T
 import Data.Text.IO qualified as TIO

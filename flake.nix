@@ -14,7 +14,7 @@
         overlays = [
           haskellNix.overlay
           (final: prev: {
-            benchit = final.haskell-nix.project' {
+            advent-of-code = final.haskell-nix.project' {
               src = ./.;
               compiler-nix-name = "ghc98";
               shell.tools = {
@@ -30,9 +30,9 @@
           inherit system overlays;
           inherit (haskellNix) config;
         };
-        flake = pkgs.benchit.flake { };
+        flake = pkgs.advent-of-code.flake { };
       in flake // {
-        packages.default = flake.packages."benchit:exe:benchit";
+        packages.default = flake.packages."advent-of-code:exe:benchit";
         nixconfig = {
           substituters =
             [ "s4://nix-cache-new?endpoint=ams3.digitaloceanspaces.com" ];
