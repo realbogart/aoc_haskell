@@ -23,7 +23,7 @@ isNice s = (length vowels >= 3) && twice && not prohibited
         || isInfixOf "xy" s
 
 isNicer :: [Char] -> Bool
-isNicer s = pairTwice && repeatedChar
+isNicer _ = pairTwice && repeatedChar
   where
     pairTwice = False
     repeatedChar = False
