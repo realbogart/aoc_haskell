@@ -4,6 +4,7 @@ module AoC
     module Text.Megaparsec.Char,
     module Text.Pretty.Simple,
     module Control.Monad,
+    module Control.Monad.ST,
     module Control.Applicative,
     module Data.Function,
     module Data.Maybe,
@@ -20,6 +21,9 @@ module AoC
     T.pack,
     parseAndApply,
     parseTestAndSolve,
+    -- State.get,
+    -- State.put,
+    -- State.StateT,
     L.sort,
     L.sortBy,
     L.foldl',
@@ -56,22 +60,28 @@ module AoC
     setGridValues,
     getGridLines,
     findGridCoords,
+    runIdentity,
+    Identity,
     Bi.first,
     Bi.second,
   )
 where
 
+import Chronos qualified
 import Control.Applicative ((<|>))
-import Control.Monad (void)
+import Control.Monad (forM_, void)
+import Control.Monad.ST (ST, runST)
+-- import Control.Monad.Trans.State qualified as State
 import Control.Parallel.Strategies
 import Data.Bifunctor qualified as Bi
 import Data.Bits qualified as B
 import Data.Char (chr, digitToInt, isDigit, isUpper, ord)
 import Data.Foldable (maximumBy, minimumBy)
 import Data.Function (on)
+import Data.Functor.Identity (Identity, runIdentity)
 import Data.List qualified as L
 import Data.List.Split qualified as Split
-import Data.Maybe (catMaybes, fromJust, isJust, isNothing, mapMaybe)
+import Data.Maybe (catMaybes, fromJust, fromMaybe, isJust, isNothing, mapMaybe)
 import Data.Ord (Down (..), comparing)
 import Data.Text qualified as T
 import Data.Text.IO qualified as TIO
@@ -201,7 +211,8 @@ parseTestAndSolve parseFn solveFn tests inputFile = do
     Left err -> putStrLn $ "Failed to parse tests: " ++ errorBundlePretty err
     Right inputs -> do
       putStrLn "Running tests...\n"
-      testResults <- traverse verifyTestResult (zip3 tests inputs (map solveFn inputs))
+      (duration, testResults) <- Chronos.stopwatch $ traverse verifyTestResult (zip3 tests inputs (map solveFn inputs))
+      putStrLn $ "Test time: " ++ show duration
       if and testResults
         then do
           putStrLn "\nAll tests passed!"

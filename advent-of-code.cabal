@@ -16,6 +16,7 @@ common warnings
                       -Wno-all-missed-specialisations -Wno-missed-specialisations
                       -Wno-missing-deriving-strategies -Wno-prepositive-qualified-module
                       -Wno-unused-top-binds -Wno-x-partial -Wno-missing-role-annotations
+                      -Wno-redundant-bang-patterns
 
 library
     import:           warnings
@@ -63,7 +64,8 @@ library
                       Y2023.D10,
                       Y2023.D11,
                       Y2023.D12,
-                      Y2024.D17
+                      Y2024.D17,
+                      Y2025.D1
     -- other-modules:    Y2020
     build-depends:    base,
                       megaparsec,
@@ -77,13 +79,18 @@ library
                       groupBy,
                       parallel,
                       pretty-simple,
-                      unordered-containers
+                      unordered-containers,
+                      chronos,
+                      streamly,
+                      streamly-core,
+                      transformers
     hs-source-dirs:   src
     default-language: GHC2021
     default-extensions: OverloadedStrings,
                         DuplicateRecordFields,
                         NoFieldSelectors,
                         StrictData,
+                        -- Strict,
                         OverloadedRecordDot,
                         ViewPatterns
 
