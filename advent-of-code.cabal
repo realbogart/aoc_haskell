@@ -67,7 +67,8 @@ library
                       Y2024.D17,
                       Y2025.D1,
                       Y2025.D2,
-                      Y2025.D3
+                      Y2025.D3,
+                      Y2025.D4
     -- other-modules:    Y2020
     build-depends:    base,
                       megaparsec,

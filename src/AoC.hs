@@ -60,6 +60,7 @@ module AoC
     setGridValues,
     getGridLines,
     findGridCoords,
+    getGridNeighbours,
     runIdentity,
     Identity,
     Bi.first,
@@ -176,7 +177,7 @@ getGridNeighbours grid (x, y) = filter (isInsideGrid grid) ns
         (x, y + 1),
         (x - 1, y + 1),
         (x - 1, y),
-        (x - 1, y + 1)
+        (x - 1, y - 1)
       ]
 
 parseLineSeparated :: Parser a -> Parser [a]
