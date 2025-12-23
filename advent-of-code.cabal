@@ -96,7 +96,8 @@ library
                         StrictData,
                         -- Strict,
                         OverloadedRecordDot,
-                        ViewPatterns
+                        ViewPatterns,
+                        TupleSections
 
 executable benchit
     import:         warnings

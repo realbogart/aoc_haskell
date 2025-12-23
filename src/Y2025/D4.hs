@@ -14,6 +14,8 @@ parseInput = do
 
 partOneTests = [("..@@.@@@@.\n@@@.@.@.@@\n@@@@@.@.@@\n@.@@@@..@.\n@@.@@@@.@@\n.@@@@@@@.@\n.@.@.@.@@@\n@.@@@.@@@@\n.@@@@@@@@.\n@.@.@@@.@.", 13)]
 
+partTwoTests = [("..@@.@@@@.\n@@@.@.@.@@\n@@@@@.@.@@\n@.@@@@..@.\n@@.@@@@.@@\n.@@@@@@@.@\n.@.@.@.@@@\n@.@@@.@@@@\n.@@@@@@@@.\n@.@.@@@.@.", 43)]
+
 canAccess :: Grid Bool -> GridCoord -> Bool
 canAccess grid coord = length (filter (getGridValue grid) neighbours) < 4
   where
@@ -22,5 +24,20 @@ canAccess grid coord = length (filter (getGridValue grid) neighbours) < 4
 getPaperCoords :: Grid Bool -> [GridCoord]
 getPaperCoords grid = [(x, y) | x <- [0 .. (grid.width - 1)], y <- [0 .. (grid.height - 1)], getGridValue grid (x, y)]
 
+getAccessiblePaperCoords :: Grid Bool -> [GridCoord]
+getAccessiblePaperCoords grid = filter (canAccess grid) $ getPaperCoords grid
+
+countAllAccessiblePapers :: Grid Bool -> Int -> Int
+countAllAccessiblePapers grid acc
+  | num_accessible > 0 = countAllAccessiblePapers next_grid (acc + num_accessible)
+  | otherwise = acc
+  where
+    coords = getAccessiblePaperCoords grid
+    num_accessible = length coords
+    next_grid = setGridValues grid (map (,False) coords)
+
 partOne :: Grid Bool -> Int
-partOne grid = length $ filter (canAccess grid) $ getPaperCoords grid
+partOne grid = length $ getAccessiblePaperCoords grid
+
+partTwo :: Grid Bool -> Int
+partTwo grid = countAllAccessiblePapers grid 0
