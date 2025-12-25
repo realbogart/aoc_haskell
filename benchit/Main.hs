@@ -1,8 +1,8 @@
 module Main (main) where
 
 import AoC
-import Y2025.D7
+import Y2025.D8
 
 main :: IO ()
 main = do
-  parseTestAndSolve parseInput partTwo partTwoTests "src/Y2025/D7.txt"
+  parseTestAndSolve parseInput partOne partOneTests "src/Y2025/D8.txt"
