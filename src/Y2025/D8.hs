@@ -39,24 +39,35 @@ closest boxes = sortBy (\(_, a) (_, b) -> compare a b) (zip combinations distanc
     distances = map (uncurry distance) combinations
 
 connect :: Clusters -> (Box, Box) -> Clusters
-connect clusters (a, b) = new_cluster : next_clusters
+connect clusters (a, b) = next_clusters
   where
     cluster_with_a = find (elem a) clusters
     cluster_with_b = find (elem b) clusters
     clusters_without_a_and_b = filter (\c -> not (a `elem` c || b `elem` c)) clusters
-    (new_cluster, next_clusters)
-      | Nothing <- cluster_with_a, Nothing <- cluster_with_b = ([a, b], clusters)
-      | Just ca <- cluster_with_a, Just cb <- cluster_with_b, ca == cb = ([], clusters)
-      | Just ca <- cluster_with_a, Just cb <- cluster_with_b = (ca ++ cb, clusters_without_a_and_b)
-      | Nothing <- cluster_with_a, Just cb <- cluster_with_b = (a : cb, clusters_without_a_and_b)
-      | Just ca <- cluster_with_a, Nothing <- cluster_with_b = (b : ca, clusters_without_a_and_b)
+    next_clusters
+      | Nothing <- cluster_with_a, Nothing <- cluster_with_b = [a, b] : clusters
+      | Just ca <- cluster_with_a, Just cb <- cluster_with_b, ca == cb = clusters
+      | Just ca <- cluster_with_a, Just cb <- cluster_with_b = (ca ++ cb) : clusters_without_a_and_b
+      | Nothing <- cluster_with_a, Just cb <- cluster_with_b = (a : cb) : clusters_without_a_and_b
+      | Just ca <- cluster_with_a, Nothing <- cluster_with_b = (b : ca) : clusters_without_a_and_b
+
+initClusters :: [Box] -> Clusters
+initClusters = map (: [])
 
 partOne :: [Box] -> Int
 partOne boxes = product $ take 3 cluster_sizes
   where
+    start_clusters = initClusters boxes
     closest_boxes = map fst $ closest boxes
-    clusters = foldl connect [] $ take 1000 closest_boxes
+    clusters = foldl' connect start_clusters $ take 1000 closest_boxes
     cluster_sizes = sortBy (comparing Data.Ord.Down) $ map length clusters
 
 partTwo :: [Box] -> Int
-partTwo _ = 0
+partTwo boxes = last_a_x * last_b_x
+  where
+    start_clusters = initClusters boxes
+    closest_boxes = map fst $ closest boxes
+    clusters = scanl connect start_clusters $ take 4000 closest_boxes
+    num_clusters = map length clusters
+    boxes_num_clusters = filter (\(_, n) -> n == 1) (zip closest_boxes (tail num_clusters))
+    (((last_a_x, _, _), (last_b_x, _, _)), _) = head boxes_num_clusters
