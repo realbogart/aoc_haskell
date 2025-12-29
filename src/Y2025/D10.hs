@@ -103,16 +103,16 @@ pressButtonsJoltage buttons joltage = map (pressButtonJoltage joltage) buttons
 validJoltage :: Joltage -> Joltage -> Bool
 validJoltage joltage_target joltage = all (\(t, c) -> c <= t) $ V.zip joltage_target joltage
 
-heuristic :: Joltage -> Joltage -> Int
-heuristic target current = V.sum $ V.map (uncurry (-)) $ V.zip target current
+heuristic :: Int -> Joltage -> Joltage -> Int
+heuristic max_button target current = div (V.sum $ V.map (uncurry (-)) $ V.zip target current) max_button
 
-findLeastPressesJoltage_ :: SearchState s -> [ButtonRaw] -> Joltage -> (Joltage, Int) -> ST s (Maybe Int)
-findLeastPressesJoltage_ ss buttons target (current_joltage, presses) = do
+findLeastPressesJoltage_ :: SearchState s -> [ButtonRaw] -> Int -> Joltage -> (Joltage, Int) -> ST s (Maybe Int)
+findLeastPressesJoltage_ ss buttons max_button target (current_joltage, presses) = do
   let current_joltage_hash = V.toList current_joltage
       neighbours = pressButtonsJoltage buttons current_joltage
 
   if current_joltage == target
-    then return $ Just presses
+    then trace "Found one!" $ return $ Just presses
     else do
       closed <- readSTRef ss.closed
 
@@ -125,16 +125,16 @@ findLeastPressesJoltage_ ss buttons target (current_joltage, presses) = do
                 (Just existing_score) -> existing_score < current_score
                 Nothing -> False
           if better_path_exists
-            then return Nothing
+            then trace "Found a better path" $ return Nothing
             else do
               modifySTRef
                 ss.open
                 ( \open ->
-                    foldl' (\o n -> H.insert (H.Entry (presses + 1 + heuristic target n) (n, presses + 1)) o) open $ filter (validJoltage target) neighbours
+                    foldl' (\o n -> H.insert (H.Entry (presses + 1 + heuristic max_button target n) (n, presses + 1)) o) open $ filter (validJoltage target) neighbours
                 )
               return Nothing
   where
-    current_score = presses + heuristic target current_joltage
+    current_score = presses + heuristic max_button target current_joltage
 
 findLeastPressesJoltage :: Machine -> Maybe Int
 findLeastPressesJoltage (Machine _ _ buttons_raw joltage_target) =
@@ -144,14 +144,15 @@ findLeastPressesJoltage (Machine _ _ buttons_raw joltage_target) =
     ref_score <- newSTRef HMS.empty
 
     let state = SearchState ref_open ref_closed ref_score
+        max_button = maximum $ map length buttons_raw
 
     untilJust $ do
       open <- readSTRef ref_open
       case H.viewMin open of
-        Nothing -> return $ Just Nothing
+        Nothing -> trace "Found nothing..." $ return $ Just Nothing
         Just (H.Entry _ next_open, open') -> do
           writeSTRef ref_open open'
-          eval_result <- findLeastPressesJoltage_ state buttons_raw joltage_target next_open
+          eval_result <- findLeastPressesJoltage_ state buttons_raw max_button joltage_target next_open
           case eval_result of
             (Just solution) -> return $ Just (Just solution)
             Nothing -> return Nothing
