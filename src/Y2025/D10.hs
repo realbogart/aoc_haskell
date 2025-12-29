@@ -1,6 +1,7 @@
 module Y2025.D10 where
 
 import AoC
+import Control.Monad.Loops (untilJust)
 import Data.Bits
 import Data.HashMap.Strict qualified as HMS
 import Data.HashSet qualified as HS
@@ -29,7 +30,7 @@ data Machine = Machine
   deriving (Show)
 
 data SearchState s = SearchState
-  { open :: STRef s (H.Heap (H.Entry Int Joltage)),
+  { open :: STRef s (H.Heap (H.Entry Int (Joltage, Int))),
     closed :: STRef s (HS.HashSet JoltageHash),
     score :: STRef s (HMS.HashMap JoltageHash Int)
   }
@@ -105,13 +106,14 @@ validJoltage joltage_target joltage = all (\(t, c) -> c <= t) $ V.zip joltage_ta
 heuristic :: Joltage -> Joltage -> Int
 heuristic target current = V.sum $ V.map (uncurry (-)) $ V.zip target current
 
-findLeastPressesJoltage_ :: SearchState s -> [ButtonRaw] -> Joltage -> Joltage -> Int -> ST s (Maybe Int)
-findLeastPressesJoltage_ ss buttons target current_joltage presses
-  | current_joltage == target = return $ Just (presses + 1)
-  | otherwise = do
-      let current_joltage_hash = V.toList current_joltage
-          neighbours = pressButtonsJoltage buttons current_joltage
+findLeastPressesJoltage_ :: SearchState s -> [ButtonRaw] -> Joltage -> (Joltage, Int) -> ST s (Maybe Int)
+findLeastPressesJoltage_ ss buttons target (current_joltage, presses) = do
+  let current_joltage_hash = V.toList current_joltage
+      neighbours = pressButtonsJoltage buttons current_joltage
 
+  if current_joltage == target
+    then return $ Just presses
+    else do
       closed <- readSTRef ss.closed
 
       if HS.member current_joltage_hash closed
@@ -125,26 +127,34 @@ findLeastPressesJoltage_ ss buttons target current_joltage presses
           if better_path_exists
             then return Nothing
             else do
-              open <- readSTRef ss.open
-              let open_add_neighbours = foldl' (\o n -> H.insert (H.Entry (presses + 1 + heuristic target n) n) o) open $ filter (validJoltage target) neighbours
-                  next_open = H.viewMin open_add_neighbours
-
-              case next_open of
-                Nothing -> return Nothing
-                Just (H.Entry _ next_joltage, open') -> do
-                  writeSTRef ss.open open'
-                  findLeastPressesJoltage_ ss buttons target next_joltage (presses + 1)
+              modifySTRef
+                ss.open
+                ( \open ->
+                    foldl' (\o n -> H.insert (H.Entry (presses + 1 + heuristic target n) (n, presses + 1)) o) open $ filter (validJoltage target) neighbours
+                )
+              return Nothing
   where
     current_score = presses + heuristic target current_joltage
 
 findLeastPressesJoltage :: Machine -> Maybe Int
 findLeastPressesJoltage (Machine _ _ buttons_raw joltage_target) =
   runST $ do
-    open <- newSTRef H.empty
-    closed <- newSTRef HS.empty
-    score <- newSTRef HMS.empty
-    let initial_state = SearchState open closed score
-    findLeastPressesJoltage_ initial_state buttons_raw joltage_target (V.replicate (V.length joltage_target) 0) 0
+    ref_open <- newSTRef (H.fromList [H.Entry 0 (V.replicate (V.length joltage_target) 0, 0)])
+    ref_closed <- newSTRef HS.empty
+    ref_score <- newSTRef HMS.empty
+
+    let state = SearchState ref_open ref_closed ref_score
+
+    untilJust $ do
+      open <- readSTRef ref_open
+      case H.viewMin open of
+        Nothing -> return $ Just Nothing
+        Just (H.Entry _ next_open, open') -> do
+          writeSTRef ref_open open'
+          eval_result <- findLeastPressesJoltage_ state buttons_raw joltage_target next_open
+          case eval_result of
+            (Just solution) -> return $ Just (Just solution)
+            Nothing -> return Nothing
 
 partOne :: [Machine] -> Int
 partOne = sum . map findLeastPressesIndicators

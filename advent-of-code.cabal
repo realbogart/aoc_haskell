@@ -94,7 +94,8 @@ library
                       streamly-core,
                       transformers,
                       extra,
-                      heaps
+                      heaps,
+                      monad-loops
     hs-source-dirs:   src
     default-language: GHC2021
     default-extensions: OverloadedStrings,
