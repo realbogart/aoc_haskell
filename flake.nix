@@ -27,6 +27,7 @@
                 ghcid
                 ormolu
                 pkg-config
+                z3
               ];
             };
           })

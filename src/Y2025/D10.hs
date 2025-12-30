@@ -8,6 +8,8 @@ import Data.HashSet qualified as HS
 import Data.Heap qualified as H
 import Data.STRef
 import Data.Vector qualified as V
+import Math.LinearEquationSolver
+import System.IO.Unsafe (unsafePerformIO)
 
 default (Text, Int)
 
@@ -163,4 +165,6 @@ partOne :: [Machine] -> Int
 partOne = sum . map findLeastPressesIndicators
 
 partTwo :: [Machine] -> Int
-partTwo = sum . mapMaybe findLeastPressesJoltage
+partTwo machines = trace (show test_solve) $ sum $ mapMaybe findLeastPressesJoltage machines
+  where
+    test_solve = unsafePerformIO $ solveIntegerLinearEqsAll Z3 3 [[2, 3, 4], [6, -3, 9]] [20, -6]
