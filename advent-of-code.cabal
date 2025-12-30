@@ -95,7 +95,8 @@ library
                       transformers,
                       extra,
                       heaps,
-                      monad-loops
+                      monad-loops,
+                      linearEqSolver
     hs-source-dirs:   src
     default-language: GHC2021
     default-extensions: OverloadedStrings,

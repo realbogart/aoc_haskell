@@ -130,6 +130,7 @@ findLeastPressesJoltage_ ss buttons max_button target (current_joltage, presses)
               modifySTRef
                 ss.open
                 ( \open ->
+                    -- trace ("open: " ++ show open) $ foldl' (\o n -> H.insert (H.Entry (presses + 1 + heuristic max_button target n) (n, presses + 1)) o) open $ filter (validJoltage target) neighbours
                     foldl' (\o n -> H.insert (H.Entry (presses + 1 + heuristic max_button target n) (n, presses + 1)) o) open $ filter (validJoltage target) neighbours
                 )
               return Nothing
@@ -150,6 +151,7 @@ findLeastPressesJoltage (Machine _ _ buttons_raw joltage_target) =
       open <- readSTRef ref_open
       case H.viewMin open of
         Nothing -> trace "Found nothing..." $ return $ Just Nothing
+        -- Just (H.Entry score next_open, open') -> trace ((show next_open) ++ " : " ++ (show score)) $ do
         Just (H.Entry _ next_open, open') -> do
           writeSTRef ref_open open'
           eval_result <- findLeastPressesJoltage_ state buttons_raw max_button joltage_target next_open

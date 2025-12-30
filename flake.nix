@@ -3,7 +3,7 @@
 
   inputs = {
     nixpkgs.url =
-      "github:nixos/nixpkgs/e12483116b3b51a185a33a272bf351e357ba9a99";
+      "github:nixos/nixpkgs/041c867bad68dfe34b78b2813028a2e2ea70a23c";
     flake-utils.url = "github:numtide/flake-utils";
     haskellNix.url = "github:input-output-hk/haskell.nix";
   };
@@ -16,13 +16,18 @@
           (final: prev: {
             advent-of-code = final.haskell-nix.project' {
               src = ./.;
-              compiler-nix-name = "ghc98";
+              compiler-nix-name = "ghc9101";
               shell.tools = {
                 cabal = { };
                 hlint = { };
                 haskell-language-server = { };
               };
-              shell.buildInputs = with pkgs; [ nixpkgs-fmt ghcid ormolu ];
+              shell.buildInputs = with pkgs; [
+                nixpkgs-fmt
+                ghcid
+                ormolu
+                pkg-config
+              ];
             };
           })
         ];
