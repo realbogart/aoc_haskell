@@ -96,7 +96,8 @@ library
                       extra,
                       heaps,
                       monad-loops,
-                      linearEqSolver
+                      linearEqSolver,
+                      sbv
     hs-source-dirs:   src
     default-language: GHC2021
     default-extensions: OverloadedStrings,

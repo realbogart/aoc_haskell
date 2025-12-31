@@ -1,11 +1,13 @@
 module Y2025.D10 where
 
 import AoC
+import Control.Monad (zipWithM_)
 import Control.Monad.Loops (untilJust)
 import Data.Bits
 import Data.HashMap.Strict qualified as HMS
 import Data.HashSet qualified as HS
 import Data.Heap qualified as H
+import Data.SBV qualified as SBV
 import Data.STRef
 import Data.Vector qualified as V
 import Math.LinearEquationSolver
@@ -16,6 +18,8 @@ default (Text, Int)
 type Button = Int
 
 type ButtonRaw = [Int]
+
+type ButtonEquation = ([[Integer]], [Integer])
 
 type Indicators = Int
 
@@ -161,10 +165,84 @@ findLeastPressesJoltage (Machine _ _ buttons_raw joltage_target) =
             (Just solution) -> return $ Just (Just solution)
             Nothing -> return Nothing
 
+buttonEquation :: Machine -> ButtonEquation
+-- buttonEquation (Machine _ _ buttons_raw joltage_target) = trace ((show button_matrix) ++ " : " ++ show answer) $ (button_matrix, answer)
+buttonEquation (Machine _ _ buttons_raw joltage_target) = (button_matrix, answer)
+  where
+    num_joltage = length joltage_target
+    joltage_indices = [0 .. num_joltage - 1]
+    hasJoltageIndex i = map (\button -> if i `elem` button then 1 else 0) buttons_raw
+    button_matrix :: [[Integer]] = map hasJoltageIndex joltage_indices
+    answer = map fromIntegral $ V.toList joltage_target
+
+solveEquation :: ButtonEquation -> Int
+-- solveEquation (a, b) = trace (show solved_equations) $ fromIntegral $ minimum $ map sum valid_equations
+solveEquation (a, b) = fromIntegral $ minimum $ map sum valid_equations
+  where
+    solved_equations = unsafePerformIO $ solveIntegerLinearEqsAll Z3 2000 a b
+    valid_equations = filter (all (>= 0)) solved_equations
+
+solveEquationSBV :: ButtonEquation -> Int
+solveEquationSBV (a, b) = unsafePerformIO $ do
+  let num_buttons = length (head a)
+      vars = ["x" ++ show i | i <- [0 .. num_buttons - 1]]
+  result <- SBV.sat $ do
+    xs <- SBV.sIntegers vars
+
+    zipWithM_
+      ( \button_row joltage ->
+          SBV.constrain $
+            sum
+              ( zipWith
+                  (\button x -> SBV.literal button * x)
+                  button_row
+                  xs
+              )
+              SBV..== SBV.literal joltage
+      )
+      a
+      b
+
+    pure SBV.sTrue
+
+  let mxs :: [Integer] = mapMaybe (`SBV.getModelValue` result) vars
+  return $ fromInteger $ sum mxs
+
+testSBV :: Int
+testSBV = unsafePerformIO $ do
+  result <- SBV.sat $ do
+    x <- SBV.sInteger "x"
+    y <- SBV.sInteger "y"
+
+    SBV.constrain $ 2 * x + 3 * y SBV..== 10
+    SBV.constrain $ y SBV..== 50
+
+    pure SBV.sTrue
+
+  let mx = SBV.getModelValue "x" result
+
+  return $ fromInteger $ fromMaybe 50 mx
+
 partOne :: [Machine] -> Int
 partOne = sum . map findLeastPressesIndicators
 
 partTwo :: [Machine] -> Int
-partTwo machines = trace (show test_solve) $ sum $ mapMaybe findLeastPressesJoltage machines
-  where
-    test_solve = unsafePerformIO $ solveIntegerLinearEqsAll Z3 3 [[2, 3, 4], [6, -3, 9]] [20, -6]
+partTwo machines = sum $ map (solveEquationSBV . buttonEquation) machines
+
+-- partTwo _ = testSBV
+
+-- where
+--   a =
+--     [ [1, 0, 1, 1, 0, 0, 1, 1],
+--       [0, 1, 0, 0, 0, 0, 1, 0],
+--       [0, 0, 0, 1, 1, 1, 1, 0],
+--       [0, 1, 0, 1, 0, 1, 0, 0],
+--       [1, 0, 0, 0, 0, 0, 1, 0],
+--       [0, 1, 0, 1, 1, 1, 0, 1],
+--       [0, 0, 1, 0, 1, 0, 0, 0]
+--     ]
+--   b = [67, 29, 30, 40, 18, 54, 21]
+--   test_solve =
+--     map sum $ map (filter (>= 0)) $ unsafePerformIO $ solveIntegerLinearEqsAll Z3 1 a b
+
+-- [..##.#.] (0,4) (1,3,5) (0,6) (0,2,3,5) (2,5,6) (2,3,5) (0,1,2,4) (0,5) {67,29,30,40,18,54,21}
