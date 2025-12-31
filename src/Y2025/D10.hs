@@ -186,8 +186,12 @@ solveEquationSBV :: ButtonEquation -> Int
 solveEquationSBV (a, b) = unsafePerformIO $ do
   let num_buttons = length (head a)
       vars = ["x" ++ show i | i <- [0 .. num_buttons - 1]]
-  result <- SBV.sat $ do
+
+  result <- SBV.optimize SBV.Lexicographic $ do
     xs <- SBV.sIntegers vars
+
+    mapM_ (\x -> SBV.constrain $ x SBV..>= 0) xs
+    SBV.minimize "min_xs" (sum xs)
 
     zipWithM_
       ( \button_row joltage ->
@@ -205,8 +209,13 @@ solveEquationSBV (a, b) = unsafePerformIO $ do
 
     pure SBV.sTrue
 
-  let mxs :: [Integer] = mapMaybe (`SBV.getModelValue` result) vars
-  return $ fromInteger $ sum mxs
+  let result_xs :: [Integer] = case result of
+        (SBV.LexicographicResult model) ->
+          mapMaybe (`SBV.getModelValue` model) vars
+        _ -> trace "no result" []
+
+  -- trace (show result_xs) $ return $ fromInteger $ sum result_xs
+  return $ fromInteger $ sum result_xs
 
 testSBV :: Int
 testSBV = unsafePerformIO $ do
@@ -228,21 +237,3 @@ partOne = sum . map findLeastPressesIndicators
 
 partTwo :: [Machine] -> Int
 partTwo machines = sum $ map (solveEquationSBV . buttonEquation) machines
-
--- partTwo _ = testSBV
-
--- where
---   a =
---     [ [1, 0, 1, 1, 0, 0, 1, 1],
---       [0, 1, 0, 0, 0, 0, 1, 0],
---       [0, 0, 0, 1, 1, 1, 1, 0],
---       [0, 1, 0, 1, 0, 1, 0, 0],
---       [1, 0, 0, 0, 0, 0, 1, 0],
---       [0, 1, 0, 1, 1, 1, 0, 1],
---       [0, 0, 1, 0, 1, 0, 0, 0]
---     ]
---   b = [67, 29, 30, 40, 18, 54, 21]
---   test_solve =
---     map sum $ map (filter (>= 0)) $ unsafePerformIO $ solveIntegerLinearEqsAll Z3 1 a b
-
--- [..##.#.] (0,4) (1,3,5) (0,6) (0,2,3,5) (2,5,6) (2,3,5) (0,1,2,4) (0,5) {67,29,30,40,18,54,21}
