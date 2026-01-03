@@ -2,7 +2,7 @@ module Y2025.D12 where
 
 import AoC
 import Data.Function ((&))
-import Data.List (transpose)
+import Data.List (nub, transpose)
 import Data.Vector qualified as V
 import GHC.IO (unsafePerformIO)
 
@@ -46,7 +46,7 @@ partOneTests =
   ]
 
 variants :: Shape -> V.Vector Shape
-variants s = V.uniq $ V.fromList $ s : map V.fromList [flipped_h, flipped_v, flipped, trans, trans_flipped_h, trans_flipped_v, trans_reversed]
+variants s = V.uniq $ V.fromList $ nub $ s : map V.fromList [flipped_h, flipped_v, flipped, trans, trans_flipped_h, trans_flipped_v, trans_reversed]
   where
     l = V.toList s
     flipped = reverse l
